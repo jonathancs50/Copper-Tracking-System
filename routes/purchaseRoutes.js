@@ -1,39 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-// Import the readCsvFile function
-const readCsvFile = require('../copperList');
 
-// Read the CSV file and process its data
-const path = require('path');
-const filePath = path.join(__dirname, '..', 'assets', 'Copper Price Apr2024.csv');
-let testArray=[];
-// Declare dataArray as a global variable
-let dataArray;
-
-// Read the CSV file and process its data
-readCsvFile(filePath)
-    .then((data) => {
-        // Assign the data to the global dataArray variable
-        dataArray = data;
-
-        // Route handler for rendering the purchase page
-        router.get("/purchase", (req, res, next) => {
-            const purchaseQuery = "SELECT * FROM tblPurchase";
-            console.log("testing new one");
-            global.db.all(purchaseQuery, (err, rows) => {
-                if (err) {
-                    next(err);
-                } else {
-                    // Render HTML using EJS template
-                    res.render("purchase.ejs", { purchases: rows, dataArray: dataArray });
-                }
-            });
-        });
-    })
-    .catch((error) => {
-        console.error('Error reading CSV file:', error);
-    });
 
 // Route handler for inserting a purchase
 router.get("/insert", (req, res, next) => {
@@ -63,11 +31,75 @@ router.get("/update", (req, res, next) => {
     });
 });
 
+// Route handler for inserting a purchase
+// Route handler for fetching purchases and descriptions
+router.get("/purchase", (req, res, next) => {
+    const purchaseQuerySelect = "SELECT * FROM tblPurchase";
+    const descriptionQuerySelect = "SELECT Description FROM tblPriceList";
+
+    // Fetch purchases
+    global.db.all(purchaseQuerySelect, (err, purchases) => {
+        if (err) {
+            next(err);
+            return;
+        }
+        
+        // Fetch descriptions
+        global.db.all(descriptionQuerySelect, (err, descriptions) => {
+            if (err) {
+                next(err);
+                return;
+            }
+            
+            // Render HTML using EJS template with purchases and descriptions passed to it
+            res.render("purchase", { purchases: purchases, descriptions: descriptions });
+        });
+    });
+});
+
+// Route handler for form submission
+router.post("/purchase", (req, res, next) => {
+    const { contractNumber, descriptionDropdown, height, width, length, orderQuantity, kgPerLength, pricePerLength } = req.body;
+    // console.log('Received form data:', req.body);
+
+    const values = [contractNumber, descriptionDropdown, height, width, length, orderQuantity, kgPerLength, pricePerLength];
+    const query = "INSERT INTO tblPurchase (ContractNumber, Description, Height, Width, Length, OrderQty, KgPerLength, PricePerLength) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    
+
+    global.db.run(query, values, function(err) {
+        if (err) {
+            next(err);
+        } else {
+            res.json({ message: 'Form submitted successfully' }); // Send JSON response
+        }
+    });
+});
+
 router.get("/", (req, res, next) => {
 
           // Render HTML using EJS template
           res.render("index.ejs");
 
+});
+
+router.get("/details/:description", (req, res, next) => {
+    const description = req.params.description;
+    const query = "SELECT Height, Width, Length, KgPerLength, PricePerLength FROM tblPriceList WHERE Description = ?";
+
+    global.db.get(query, [description], (err, row) => {
+        if (err) {
+            next(err);
+        } else {
+            // console.log(row); // Log the retrieved row
+            res.json(row);
+        }
+    });
+});
+
+// Error handling middleware
+router.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Internal Server Error');
 });
 
 module.exports = router;
