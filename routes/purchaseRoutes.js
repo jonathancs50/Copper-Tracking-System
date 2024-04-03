@@ -56,4 +56,11 @@ router.get("/update", (req, res, next) => {
     });
 });
 
+router.get("/", (req, res, next) => {
+
+          // Render HTML using EJS template
+          res.render("index.ejs");
+
+});
+
 module.exports = router;
