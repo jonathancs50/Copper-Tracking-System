@@ -70,22 +70,21 @@
       <h2>Purchase Order</h2>
       <p>Enter purchase details</p>
 
+
+
       <div className="control">
         <label>Contract Number:</label>
+        <input id="description" required />
+    </div>
+      <div className="control-row">
+        <label>Description:</label>
         <select id="myDropdown" name="myDropdown">
           <option value="option1">Contract 1</option>
           <option value="option2">Contract 2</option>
           <option value="option3">Contract 3</option>
           <option value="option4">Contract 4</option>
         </select>
-      </div>
-
-      <div className="control-row">
-        <div className="control">
-          <label htmlFor="password">Description</label>
-          <input id="description" required />
         </div>
-
         <div className="control">
           <label>Height:</label>
           <input id="height" required />
@@ -111,14 +110,6 @@
         <div className="control">
           <label>Price/Length:</label>
           <input id="priceperlength" required />
-        </div>
-        <div className="control">
-          <label>Price/Kg:</label>
-          <input id="priceperkg" required />
-        </div>
-        <div className="control">
-          <label>Total Length Ordered:</label>
-          <input id="totallengthordered" required />
         </div>
       </div>
 
