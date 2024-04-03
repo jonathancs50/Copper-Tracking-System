@@ -7,19 +7,26 @@ const readCsvFile = require('../copperList');
 // Read the CSV file and process its data
 const path = require('path');
 const filePath = path.join(__dirname, '..', 'assets', 'Copper Price Apr2024.csv');
+let testArray=[];
+// Declare dataArray as a global variable
+let dataArray;
 
+// Read the CSV file and process its data
 readCsvFile(filePath)
-    .then((dataArray) => {
+    .then((data) => {
+        // Assign the data to the global dataArray variable
+        dataArray = data;
+
         // Route handler for rendering the purchase page
         router.get("/purchase", (req, res, next) => {
             const purchaseQuery = "SELECT * FROM tblPurchase";
-        
+            console.log("testing new one");
             global.db.all(purchaseQuery, (err, rows) => {
                 if (err) {
                     next(err);
                 } else {
                     // Render HTML using EJS template
-                    res.render("purchase", { purchases: rows, dataArray: dataArray });
+                    res.render("purchase.ejs", { purchases: rows, dataArray: dataArray });
                 }
             });
         });

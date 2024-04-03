@@ -18,6 +18,7 @@ function readCsvFile(filePath, delimiter = ';') {
                 reject(error);
             });
     });
+
 }
 
 module.exports = readCsvFile;
