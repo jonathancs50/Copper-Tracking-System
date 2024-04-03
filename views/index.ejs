@@ -1,32 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Reader Homepage</title>
-    <link rel="stylesheet" href="/main.css" />
-  </head>
-  <body>
-    <div class="container">
-      <h1 id="blog-title"><%= blog.blog_title %></h1>
-      <h2><%= blog.author_name %></h2>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Title Here</title>
+    <!-- Add your CSS styles here -->
+</head>
+<body>
+    <!-- Navigation bar -->
+    <div class="navbar">
+        <ul>
+            <li><a href="/purchase">Purchase</a></li>
+            <li><a href="/delivery">Delivery</a></li>
+            <li><a href="/issue">Issue</a></li>
+            <li><a href="/return">Return</a></li>
+            <li><a href="/count">Count</a></li>
+            <li><a href="/audit">Audit</a></li>
+        </ul>
+    </div>
 
-      <!-- List of articles -->
-      <% articles.forEach(article => { %>
-      <div class="article">
-        <h3><%= article.article_subtitle %></h3>
-        <p>Date Published: <%= article.date_published %></p>
-        <a href="/articles/<%= article.article_id %>" class="read-more-button"
-          >Read More</a
-        >
-      </div>
-      <% }); %>
+    <!-- Your main content -->
+    <div class="content">
+        <!-- Include your main content here -->
     </div>
-    <!-- Apply the new class for the Author Login button -->
-    <div class="button-container">
-      <a href="/authors/login" class="button author-login-button"
-        >Author Login</a
-      >
-    </div>
-  </body>
+
+    <!-- Add your JavaScript files here -->
+</body>
 </html>
