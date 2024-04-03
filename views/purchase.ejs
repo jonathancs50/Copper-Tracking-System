@@ -1,66 +1,132 @@
+import form from
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Purchases</title>
     <style>
       table {
-          border-collapse: collapse;
-          width: 100%;
+        border-collapse: collapse;
+        width: 100%;
       }
 
-      th, td {
-          border: 1px solid #dddddd;
-          text-align: left;
-          padding: 8px;
+      th,
+      td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
       }
 
       th {
-          background-color: #f2f2f2;
+        background-color: #f2f2f2;
       }
-  </style>
-</head>
-<body>
-  <pre><%= JSON.stringify(dataArray && dataArray.length > 0 ? dataArray[0] : {}, null, 2) %></pre>
+    </style>
+  </head>
+  <body>
+    <pre>
+<%= JSON.stringify(dataArray && dataArray.length > 0 ? dataArray[0] : {}, null, 2) %></pre
+    >
     <h1>All Purchases</h1>
     <table>
-        <thead>
-            <tr>
-                <th>Contract Number</th>
-                <th>Description</th>
-                <th>Height</th>
-                <th>Width</th>
-                <th>Length</th>
-                <th>OrderQty</th>
-                <th>QtyRecieved</th>
-                <th>DateReceived</th>
-                <th>KgPerLength</th>
-                <th>PricePerLength</th>
-                <th>PricePerKg</th>
-                <th>TotalLengthOrdered</th>
-                <!-- Add additional columns here if needed -->
-            </tr>
-        </thead>
-        <tbody>
-            <% purchases.forEach(purchase => { %>
-                <tr>
-                    <td><%= purchase.ContractNumber %></td>
-                    <td><%= purchase.Description %></td>
-                    <td><%= purchase.Height %></td>
-                    <td><%= purchase.Width %></td>
-                    <td><%= purchase.Length %></td>
-                    <td><%= purchase.OrderQty %></td>
-                    <td><%= purchase.QtyRecieved %></td>
-                    <td><%= purchase.DateReceived %></td>
-                    <td><%= purchase.KgPerLength %></td>
-                    <td><%= purchase.PricePerLength %></td>
-                    <td><%= purchase.PricePerKg %></td>
-                    <td><%= purchase.TotalLengthOrdered %></td>
-                    <!-- Add additional columns here if needed -->
-                </tr>
-            <% }) %>
-        </tbody>
+      <thead>
+        <tr>
+          <th>Contract Number</th>
+          <th>Description</th>
+          <th>Height</th>
+          <th>Width</th>
+          <th>Length</th>
+          <th>OrderQty</th>
+          <th>QtyRecieved</th>
+          <th>DateReceived</th>
+          <th>KgPerLength</th>
+          <th>PricePerLength</th>
+          <th>PricePerKg</th>
+          <th>TotalLengthOrdered</th>
+          <!-- Add additional columns here if needed -->
+        </tr>
+      </thead>
+      <tbody>
+        <% purchases.forEach(purchase => { %>
+        <tr>
+          <td><%= purchase.ContractNumber %></td>
+          <td><%= purchase.Description %></td>
+          <td><%= purchase.Height %></td>
+          <td><%= purchase.Width %></td>
+          <td><%= purchase.Length %></td>
+          <td><%= purchase.OrderQty %></td>
+          <td><%= purchase.QtyRecieved %></td>
+          <td><%= purchase.DateReceived %></td>
+          <td><%= purchase.KgPerLength %></td>
+          <td><%= purchase.PricePerLength %></td>
+          <td><%= purchase.PricePerKg %></td>
+          <td><%= purchase.TotalLengthOrdered %></td>
+          <!-- Add additional columns here if needed -->
+        </tr>
+        <% }) %>
+      </tbody>
     </table>
-</body>
+    <form onSubmit="{handleSubmit}">
+      <h2>Purchase Order</h2>
+      <p>Enter purchase details</p>
+
+      <div className="control">
+        <label>Contract Number:</label>
+        <select id="myDropdown" name="myDropdown">
+          <option value="option1">Contract 1</option>
+          <option value="option2">Contract 2</option>
+          <option value="option3">Contract 3</option>
+          <option value="option4">Contract 4</option>
+        </select>
+      </div>
+
+      <div className="control-row">
+        <div className="control">
+          <label htmlFor="password">Description</label>
+          <input id="description" required />
+        </div>
+
+        <div className="control">
+          <label>Height:</label>
+          <input id="height" required />
+        </div>
+
+        <div className="control">
+          <label>Width:</label>
+          <input id="width" required />
+        </div>
+        <div className="control">
+          <label>Length:</label>
+          <input id="length" required />
+        </div>
+
+        <div className="control">
+          <label>Order Quantity:</label>
+          <input id="orderQuantity" required />
+        </div>
+        <div className="control">
+          <label>Kg/Length:</label>
+          <input id="kgperlength" required />
+        </div>
+        <div className="control">
+          <label>Price/Length:</label>
+          <input id="priceperlength" required />
+        </div>
+        <div className="control">
+          <label>Price/Kg:</label>
+          <input id="priceperkg" required />
+        </div>
+        <div className="control">
+          <label>Total Length Ordered:</label>
+          <input id="totallengthordered" required />
+        </div>
+      </div>
+
+      <p className="form-actions">
+        <button type="reset" className="button button-flat">Reset</button>
+        <button type="submit" className="button">Submit</button>
+      </p>
+    </form>
+  </body>
 </html>
