@@ -16,6 +16,7 @@ router.get("/insert", (req, res, next) => {
 
 
 router.get("/update", (req, res, next) => {
+  console.log(dat)
   const purchaseQueryInsert = "UPDATE tblPurchase SET ContractNumber = 'C2403' WHERE ContractNumber = 'C2402';";
 
   global.db.all(purchaseQueryInsert, (err, rows) => {
