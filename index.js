@@ -21,22 +21,31 @@ global.db = new sqlite3.Database("./mainDB.db", function (err) {
   }
 });
 
-// Use the articleRoutes for the /articles route
-app.use("/", purchaseRoutes);
-
-app.listen(port, () => {
-  console.log(`App listening on port ${port}`);
-});
-
+// Define the path to the CSV file
 const filePath = path.join(__dirname, 'assets', 'Copper Price Apr2024.csv');
+
+// Read the CSV file and process its data
 readCsvFile(filePath)
     .then((dataArray) => {
-        console.log(dataArray);
-        test(dataArray);
+        console.log(dataArray); // Log the data read from the CSV file
+        // Render the purchase.ejs template with the purchases and dataArray
+        app.get("/purchase", (req, res) => {
+            res.render("purchase", { purchases: [], dataArray: dataArray });
+        });
+        // Now you can pass dataArray to your route handler or use it as needed
     })
     .catch((error) => {
         console.error('Error reading CSV file:', error);
     });
+
+// Use the purchaseRoutes for the / route
+app.use("/", purchaseRoutes);
+
+// Start the server
+app.listen(port, () => {
+  console.log(`App listening on port ${port}`);
+});
+
 
 
 // Function to access the first piece of data
@@ -56,13 +65,4 @@ function test(dataArray) {
       console.log('No data found in the array.');
   }
 }
-
-
-
-
-
-
-
-
-
 
