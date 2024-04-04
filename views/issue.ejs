@@ -241,10 +241,10 @@ function fetchQtyInStockForPurchases(purchases) {
       })
       .then((data) => {
         console.log("Received quantity in stock data:", data);
-        if (Array.isArray(data) && data.length > 0 && data[0].QtyReceived !== undefined) {
+        if (Array.isArray(data) && data.length > 0 && data[0].hasOwnProperty("QtyReceived")) {
           updateQtyInStock(data[0].QtyReceived, purchase.ID);
         } else {
-          console.error("Error: Quantity in stock data is missing or invalid.");
+          throw new Error("Quantity in stock data is missing or invalid.");
         }
       })
       .catch((error) => {
@@ -256,11 +256,15 @@ function fetchQtyInStockForPurchases(purchases) {
 
 function updateQtyInStock(qtyInStockData, purchaseId) {
   // Extract the quantity from the data received from the server
-  const qtyInStock = qtyInStockData.QtyReceived || 0;
+  const qtyInStock = qtyInStockData && qtyInStockData[0] ? qtyInStockData[0].QtyReceived : 0;
 
   const row = document.querySelector(`#purchaseTable tbody tr[data-id="${purchaseId}"]`);
   const qtyInStockCell = row.querySelector("td:nth-child(8)"); // Assuming it's the 8th cell
-  qtyInStockCell.textContent = qtyInStock;
+  if (qtyInStockCell) {
+    qtyInStockCell.textContent = qtyInStock;
+  } else {
+    console.error("Qty in stock cell not found.");
+  }
 }
       </script>
     <!-- Add your JavaScript files here -->
