@@ -103,6 +103,50 @@
     </table>
     <button id="updateDeliveryBtn">Update Delivery</button>
     <script>
+         document.getElementById("updateDeliveryBtn").addEventListener("click", function() {
+    // Get all rows of the table
+    const rows = document.querySelectorAll("#purchaseTable tbody tr");
+
+    // Array to store data for update
+    const updateData = [];
+
+    // Iterate over rows and extract delivery quantities
+    rows.forEach(row => {
+      const deliveryQtyInput = row.querySelector("input[name='OrderQty']");
+      const deliveryQty = deliveryQtyInput ? deliveryQtyInput.value.trim() : null;
+
+      if (deliveryQty !== null && deliveryQty !== "") {
+        // Extract other necessary data from the row
+        const id = row.cells[0].textContent; // Assuming ID is in the first column
+        const contractNumber = row.cells[1].textContent; // Assuming Contract Number is in the second column
+        // Add data to updateData array
+        updateData.push({ id, contractNumber, deliveryQty });
+      }
+    });
+
+    // Send updateData to the server
+    fetch("/delivery/updateDelivery", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ updateData })
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log(data); // Handle response from server if needed
+    })
+    .catch(error => {
+      console.error("Error updating delivery:", error);
+    });
+  });
+
+  
       function handleSubmit(event) {
         event.preventDefault();
 

@@ -37,44 +37,24 @@ router.get("/purchases/:contractNumber", (req, res, next) => {
   });
 });
 
-// Route handler for form submission
-router.post("/purchases/:deliveryUpdate", (req, res, next) => {
-  let date = new Date().toLocaleDateString();
-  const {
-    contractNumber,
-    descriptionDropdown,
-    height,
-    width,
-    length,
-    orderQuantity,
-    input,
-    kgPerLength,
-    pricePerLength,
-  } = req.body;
-  // console.log('Received form data:', req.body);
-
-  const values = [
-    contractNumber,
-    descriptionDropdown,
-    height,
-    width,
-    length,
-    orderQuantity,
-    input,
-    date,
-    kgPerLength,
-    pricePerLength,
-  ];
-  const query =
-    "INSERT INTO tblPurchase (ContractNumber, Description, Height, Width, Length, OrderQty,QtyRecieved,DateReceived, KgPerLength, PricePerLength) VALUES (?, ?, ?, ?, ?, ?, ?, ?,?,?)";
-
-  global.db.run(query, values, function (err) {
-    if (err) {
-      next(err);
-    } else {
-      res.json({ message: "Form submitted successfully" }); // Send JSON response
-    }
+router.post("/updateDelivery", (req, res, next) => {
+    const { updateData } = req.body;
+    const currentDate = new Date().toLocaleDateString(); // Get current date
+  
+    // Loop through updateData and update delivery quantities in the database
+    updateData.forEach(({ id, contractNumber, deliveryQty }) => {
+      const query = "UPDATE tblPurchase SET QtyReceived = ?, DateReceived = ? WHERE ID = ? AND ContractNumber = ?";
+      const values = [deliveryQty, currentDate, id, contractNumber];
+  
+      global.db.run(query, values, function(err) {
+        if (err) {
+          console.error("Error updating delivery:", err);
+        }
+      });
+    });
+  
+    res.json({ message: "Delivery quantities updated successfully" });
   });
-});
+  
 
 module.exports = router;
