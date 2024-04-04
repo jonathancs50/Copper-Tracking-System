@@ -2,36 +2,6 @@ const express = require("express");
 const router = express.Router();
 
 
-
-// Route handler for inserting a purchase
-router.get("/insert", (req, res, next) => {
-    const purchaseQueryInsert = "INSERT INTO tblPurchase (ContractNumber,Description,Height,Width,Length,OrderQty,KgPerLength,PricePerLength)VALUES ('C2402','10 x 10','10','10','4000','5','3.7','710.40');";
-
-    global.db.all(purchaseQueryInsert, (err, rows) => {
-        if (err) {
-            next(err);
-        } else {
-            // Render HTML using EJS template
-            res.render("purchase", { purchases: rows });
-        }
-    });
-});
-
-// Route handler for updating a purchase
-router.get("/update", (req, res, next) => {
-    const purchaseQueryInsert = "UPDATE tblPurchase SET ContractNumber = 'C2403' WHERE ContractNumber = 'C2402';";
-
-    global.db.all(purchaseQueryInsert, (err, rows) => {
-        if (err) {
-            next(err);
-        } else {
-            // Render HTML using EJS template
-            res.render("purchase", { purchases: rows });
-        }
-    });
-});
-
-
 // Route handler for fetching purchases and descriptions
 router.get("/purchase", (req, res, next) => {
     const purchaseQuerySelect = "SELECT * FROM tblPurchase";
@@ -60,18 +30,38 @@ router.get("/purchase", (req, res, next) => {
 // Route handler for form submission
 router.post("/purchase", (req, res, next) => {
     const { contractNumber, descriptionDropdown, height, width, length, orderQuantity, kgPerLength, pricePerLength } = req.body;
-    // console.log('Received form data:', req.body);
 
     const values = [contractNumber, descriptionDropdown, height, width, length, orderQuantity, kgPerLength, pricePerLength];
-    const query = "INSERT INTO tblPurchase (ContractNumber, Description, Height, Width, Length, OrderQty, KgPerLength, PricePerLength) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    const query1 = "INSERT INTO tblPurchase (ContractNumber, Description, Height, Width, Length, OrderQty, KgPerLength, PricePerLength) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    const query2 = "INSERT INTO tblStock (ContractNumber, Description, Height, Width, Length, OrderQty, KgPerLength, PricePerLength) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     
-
-    global.db.run(query, values, function(err) {
-        if (err) {
-            next(err);
-        } else {
-            res.json({ message: 'Form submitted successfully' }); // Send JSON response
-        }
+    // Promise to execute both queries sequentially
+    new Promise((resolve, reject) => {
+        global.db.run(query1, values, function(err) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(); // Resolve the promise if the first query is successful
+            }
+        });
+    })
+    .then(() => {
+        // Execute the second query after the first one succeeds
+        return new Promise((resolve, reject) => {
+            global.db.run(query2, values, function(err) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(); // Resolve the promise if the second query is successful
+                }
+            });
+        });
+    })
+    .then(() => {
+        res.json({ message: 'Form submitted successfully' }); // Send JSON response if both queries are successful
+    })
+    .catch(err => {
+        next(err); // Forward any errors to the error handler middleware
     });
 });
 
@@ -99,14 +89,36 @@ router.get("/details/:description", (req, res, next) => {
 // Route handler for deleting a row
 router.delete('/delete/:id', (req, res, next) => {
     const idToDelete = req.params.id;
-    const query = "DELETE FROM tblPurchase WHERE ID = ?";
+    const query1 = "DELETE FROM tblPurchase WHERE ID = ?";
+    const query2 = "DELETE FROM tblStock WHERE ID = ?";
 
-    global.db.run(query, [idToDelete], function(err) {
-        if (err) {
-            next(err);
-        } else {
-            res.json({ message: 'Row deleted successfully' }); // Send JSON response
-        }
+    // Promise to execute both queries sequentially
+    new Promise((resolve, reject) => {
+        global.db.run(query1, [idToDelete], function(err) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(); // Resolve the promise if the first query is successful
+            }
+        });
+    })
+    .then(() => {
+        // Execute the second query after the first one succeeds
+        return new Promise((resolve, reject) => {
+            global.db.run(query2, [idToDelete], function(err) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(); // Resolve the promise if the second query is successful
+                }
+            });
+        });
+    })
+    .then(() => {
+        res.json({ message: 'Row deleted successfully' }); // Send JSON response if both queries are successful
+    })
+    .catch(err => {
+        next(err); // Forward any errors to the error handler middleware
     });
 });
 

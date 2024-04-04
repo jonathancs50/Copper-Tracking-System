@@ -118,9 +118,10 @@
       if (deliveryQty !== null && deliveryQty !== "") {
         // Extract other necessary data from the row
         const id = row.cells[0].textContent; // Assuming ID is in the first column
-        const contractNumber = row.cells[1].textContent; // Assuming Contract Number is in the second column
+        const contractNumber = row.cells[1].textContent;
+        const description=row.cells[2].textContent; // Assuming Contract Number is in the second column
         // Add data to updateData array
-        updateData.push({ id, contractNumber, deliveryQty });
+        updateData.push({ id, contractNumber, deliveryQty,description });
       }
     });
 
