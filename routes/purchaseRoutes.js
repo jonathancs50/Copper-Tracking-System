@@ -34,7 +34,7 @@ router.post("/purchase", (req, res, next) => {
     const values = [contractNumber, descriptionDropdown, height, width, length, orderQuantity, kgPerLength, pricePerLength];
     const query1 = "INSERT INTO tblPurchase (ContractNumber, Description, Height, Width, Length, OrderQty, KgPerLength, PricePerLength) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     const query2 = "INSERT INTO tblStock (ContractNumber, Description, Height, Width, Length, OrderQty, KgPerLength, PricePerLength) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-    
+    const query3 = "INSERT INTO tbStock (PurchaseID) VALUES (SELECT ID FROM tblPurchases WHERE "
     // Promise to execute both queries sequentially
     new Promise((resolve, reject) => {
         global.db.run(query1, values, function(err) {

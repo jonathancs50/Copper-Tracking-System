@@ -97,6 +97,7 @@
       </table>
       <button id="issueBtn">Issue To Panel</button>
       <script>
+        let qtyInStock=[];
 document.getElementById("issueBtn").addEventListener("click", function() {
   // Get all rows of the table
   const rows = document.querySelectorAll("#purchaseTable tbody tr");
@@ -153,7 +154,7 @@ document.getElementById("issueBtn").addEventListener("click", function() {
 
 function handleSubmit(event) {
   event.preventDefault();
-
+  qtyInStock=[];
   const selectedContractNumber = document.getElementById("contractNumberDropDown").value;
 
   fetch(`/delivery/purchases/${selectedContractNumber}`)
@@ -215,7 +216,15 @@ function populateTable(purchases) {
     input.name = "Qty";
     input.min = "0"; // Set minimum range
     cell.appendChild(input);
-  } else if (i === 7) {
+  } else if(i ===2){
+const input = document.createElement("input");
+    input.type = "number"; // Assuming these are numerical values
+    input.value = "1"; // Set the current value as the input's default
+    input.name = "Panel";
+    input.min = "1"; // Set minimum range
+    cell.appendChild(input);
+
+  }else if (i === 7) {
     // Placeholder for "Qty In Stock" cell
     cell.textContent = "Fetching..."; // Display fetching message temporarily
   } else {
@@ -253,18 +262,17 @@ function fetchQtyInStockForPurchases(purchases) {
   });
 }
 
-
 function updateQtyInStock(qtyInStockData, purchaseId) {
   // Extract the quantity from the data received from the server
-  const qtyInStock = qtyInStockData && qtyInStockData[0] ? qtyInStockData[0].QtyReceived : 0;
+  qtyInStock.push(qtyInStockData);
+  for(let i = 1; i<qtyInStock.length+1;i++){
 
-  const row = document.querySelector(`#purchaseTable tbody tr[data-id="${purchaseId}"]`);
-  const qtyInStockCell = row.querySelector("td:nth-child(8)"); // Assuming it's the 8th cell
-  if (qtyInStockCell) {
-    qtyInStockCell.textContent = qtyInStock;
-  } else {
-    console.error("Qty in stock cell not found.");
+    const cell8 = document.querySelector(`#purchaseTable tbody tr:nth-child(${i}) td:nth-child(8)`);
+
+// Update the content of the cell with the quantity in stock
+cell8.textContent = qtyInStock[i-1];
   }
+
 }
       </script>
     <!-- Add your JavaScript files here -->
