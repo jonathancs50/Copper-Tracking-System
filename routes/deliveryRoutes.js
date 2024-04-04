@@ -37,20 +37,6 @@ router.get("/purchases/:contractNumber", (req, res, next) => {
   });
 });
 
-// SELECT ContractNumber,
-//        Description,
-//        Height,
-//        Width,
-//        Length,
-//        SUM(OrderQty),
-//        QtyReceived,
-//        DateReceived,
-//        KgPerLength,
-//        PricePerLength,
-//        PricePerKg,
-//        SUM(TotalLengthOrdered)
-//   FROM tblPurchase
-// WHERE ContractNumber='C2404' AND Description = '10 x 10 x 4';
 
 router.post("/updateDelivery", (req, res, next) => {
     const { updateData } = req.body;

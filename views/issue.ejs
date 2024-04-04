@@ -5,8 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Issue</title>
     <!-- Add your CSS styles here -->
+    <style>
+        table {
+          border-collapse: collapse;
+          width: 100%;
+        }
+  
+        th,
+        td {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+        }
+  
+        th {
+          background-color: #f2f2f2;
+        }
+        .hide-column {
+          display: none;
+        }
+  
+        #purchaseTable td:nth-child(1),
+        #purchaseTable th:nth-child(1),
+        #deleteRow {
+          display: none;
+        }
+      </style>
 </head>
 <body>
+
     <!-- Navigation bar -->
     <div class="navbar">
         <ul>
@@ -18,12 +45,123 @@
             <li><a href="/audit">Audit</a></li>
         </ul>
     </div>
-
+<h1>Issue</h1>
     <!-- Your main content -->
     <div class="content">
         <!-- Include your main content here -->
     </div>
+    <form
+    id="purchaseForm"
+    class="deleteMode"
+    action="/purchase"
+    method="post"
+    onsubmit="handleSubmit(event)"
+  >
+    <h2>Issue Order</h2>
+    <p>Enter purchase details</p>
 
+    <div class="control-row">
+      <label for="contractNumberDropDown">Contract Number:</label>
+      <select id="contractNumberDropDown" name="contractNumberDropDown">
+        <option disabled selected>Select a Contract Number</option>
+        <% contractNumbers.forEach(contractNumbers => { %>
+        <option value="<%= contractNumbers.ContractNumber %>">
+          <%= contractNumbers.ContractNumber %>
+        </option>
+        <% }); %>
+      </select>
+    </div>
+
+    <p class="form-actions">
+      <button type="submit" class="button">Submit</button>
+    </p>
+  </form>
+    <table id="purchaseTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Contract Number</th>
+            <th>Panel Number</th>
+            <th>Description</th>
+            <th>Height</th>
+            <th>Width</th>
+            <th>Length</th>
+            <th>Qty In Stock</th>
+            <th>Issue Qty</th>
+            <th>Kg Per Length</th>
+            <th>Total Length Ordered</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+        <!-- Empty tbody for dynamically populated rows -->
+      </table>
+
+      <script>
+        function handleSubmit(event) {
+        event.preventDefault();
+
+        const selectedContractNumber = document.getElementById(
+          "contractNumberDropDown"
+        ).value;
+
+        fetch(`/delivery/purchases/${selectedContractNumber}`)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            populateTable(data);
+          })
+          .catch((error) => {
+            console.error("Error fetching purchases:", error);
+          });
+      }
+
+      function populateTable(purchases) {
+        const tableBody = document.querySelector("#purchaseTable tbody");
+        tableBody.innerHTML = ""; // Clear existing table body
+
+        if (purchases.length === 0) {
+          // Handle case where no purchases are returned
+          const row = document.createElement("tr");
+          const cell = document.createElement("td");
+          cell.colSpan = "13"; // Span across all columns
+          cell.textContent = "No purchases found.";
+          row.appendChild(cell);
+          tableBody.appendChild(row);
+          return;
+        }
+
+        purchases.forEach((purchase) => {
+          const row = document.createElement("tr");
+          const cells = [
+            purchase.ID,
+            purchase.ContractNumber,
+            "Panel",
+            purchase.Description,
+            purchase.Height,
+            purchase.Width,
+            purchase.Length,
+            purchase.QtyReceived,
+            "test",
+            purchase.KgPerLength,
+            purchase.TotalLengthOrdered,
+          ];
+
+          cells.forEach((cellData, i) => {
+  const cell = document.createElement("td");
+
+  cell.textContent = cellData; // Set the text content for all columns
+
+  row.appendChild(cell);
+});
+
+          tableBody.appendChild(row);
+        });
+      }
+      </script>
     <!-- Add your JavaScript files here -->
 </body>
 </html>
