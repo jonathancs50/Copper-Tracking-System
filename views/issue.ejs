@@ -95,8 +95,61 @@
         <tbody></tbody>
         <!-- Empty tbody for dynamically populated rows -->
       </table>
-
+      <button id="issueBtn">Issue To Panel</button>
       <script>
+ document.getElementById("issueBtn").addEventListener("click", function() {
+    // Get all rows of the table
+    const rows = document.querySelectorAll("#purchaseTable tbody tr");
+
+    // Array to store data for update
+    const updateData = [];
+
+    // Iterate over rows and extract delivery quantities
+    rows.forEach(row => {
+      const panelInput = row.querySelector("input[name='Panel']");
+      const panel = panelInput ? panelInput.value.trim() : null;
+      const qtyInput = row.querySelector("input[name='Qty']");
+      const qtyNum = qtyInput ? qtyInput.value.trim() : null;
+
+      if (qtyNum !== null && qtyNum !== "") {
+        // Extract other necessary data from the row
+        const contractNumber = row.cells[1].textContent; 
+        const panelNumber = row.cells[2].textContent; 
+        const description = row.cells[3].textContent; 
+        const height = row.cells[4].textContent; 
+        const width = row.cells[5].textContent; 
+        const length = row.cells[6].textContent; 
+        const qty = row.cells[8].textContent; 
+        // Add data to updateData array
+        updateData.push({ contractNumber,panelNumber,description,height,width,length,qty });
+      }
+    });
+
+    // Send updateData to the server
+    fetch("/delivery/insertIssueTransaction", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ updateData })
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log(data); // Handle response from server if needed
+    })
+    .catch(error => {
+      console.error("Error updating delivery:", error);
+    });
+  });
+
+
+
+
         function handleSubmit(event) {
         event.preventDefault();
 
@@ -139,24 +192,40 @@
           const cells = [
             purchase.ID,
             purchase.ContractNumber,
-            "Panel",
+            "",
             purchase.Description,
             purchase.Height,
             purchase.Width,
             purchase.Length,
             purchase.QtyReceived,
-            "test",
+            "",
             purchase.KgPerLength,
             purchase.TotalLengthOrdered,
           ];
 
           cells.forEach((cellData, i) => {
-  const cell = document.createElement("td");
+            const cell = document.createElement("td");
 
-  cell.textContent = cellData; // Set the text content for all columns
-
-  row.appendChild(cell);
-});
+            cell.textContent = cellData;
+            if (i === 2) {
+              const input = document.createElement("input");
+              input.type = "number"; // Assuming these are numerical values
+              input.value = "1"; // Set the current value as the input's default
+              input.name = "Panel";
+              input.min = "1"; // Set minimum range
+              cell.appendChild(input);
+            } else  if (i === 8) {
+              const input = document.createElement("input");
+              input.type = "number"; // Assuming these are numerical values
+              input.value = ""; // Set the current value as the input's default
+              input.name = "Qty";
+              input.min = "0"; // Set minimum range
+              cell.appendChild(input);
+            }else{
+              cell.textContent = cellData;
+            }
+            row.appendChild(cell);
+          });
 
           tableBody.appendChild(row);
         });
