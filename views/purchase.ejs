@@ -20,6 +20,15 @@
       th {
         background-color: #f2f2f2;
       }
+      .hide-column {
+        display: none;
+      }
+
+      #purchaseTable td:nth-child(1),
+      #purchaseTable th:nth-child(1),
+      #deleteRow {
+        display: none;
+      }
     </style>
   </head>
   <body>
@@ -34,9 +43,10 @@
       </ul>
     </div>
     <h1>All Purchases</h1>
-    <table>
+    <table id="purchaseTable">
       <thead>
         <tr>
+          <th>ID</th>
           <th>Contract Number</th>
           <th>Description</th>
           <th>Height</th>
@@ -55,6 +65,7 @@
       <tbody>
         <% purchases.forEach(purchase => { %>
         <tr>
+          <td><%= purchase.ID %></td>
           <td><%= purchase.ContractNumber %></td>
           <td><%= purchase.Description %></td>
           <td><%= purchase.Height %></td>
@@ -74,6 +85,7 @@
     </table>
     <form
       id="purchaseForm"
+      class="deleteMode"
       action="/purchase"
       method="post"
       onsubmit="handleSubmit(event)"
@@ -131,7 +143,46 @@
       </p>
     </form>
 
+    <div>
+      <label for="idDropdown">Row ID Selected:</label>
+      <select id="idDropdown" name="idDropdown">
+        <option disabled selected>Select a Row to Delete</option>
+        <% purchases.forEach(p => { %>
+        <option value="<%= p.ID %>"><%= p.ID %></option>
+        <% }); %>
+      </select>
+
+      <button id="deleteBtn">Delete</button>
+    </div>
+
+    <button id="toggleColumnBtn">Edit Table</button>
     <script>
+      //Function to toggle between Delete mode
+      document.addEventListener("DOMContentLoaded", function () {
+        document
+          .getElementById("toggleColumnBtn")
+          .addEventListener("click", function () {
+            var columnNumber = 0; // Adjust this to target the right column (0-indexed)
+            var table = document.getElementById("purchaseTable");
+            var rows = table.rows;
+
+            for (var i = 0; i < rows.length; i++) {
+              var cell = rows[i].cells[columnNumber];
+              if (cell.style.display === "none" || !cell.style.display) {
+                cell.style.display = "table-cell"; // Make the cell visible
+              } else {
+                cell.style.display = "none"; // Hide the cell
+              }
+            }
+
+            // Toggle all divs with the 'deleteMode' class
+            var divs = document.querySelectorAll(".deleteMode");
+            divs.forEach(function (div) {
+              div.style.display = div.style.display === "none" ? "" : "none";
+            });
+          });
+      });
+
       function handleSubmit(event) {
         event.preventDefault(); // Prevent the default form submission behavior
 
