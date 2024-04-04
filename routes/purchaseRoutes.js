@@ -31,7 +31,7 @@ router.get("/update", (req, res, next) => {
     });
 });
 
-// Route handler for inserting a purchase
+
 // Route handler for fetching purchases and descriptions
 router.get("/purchase", (req, res, next) => {
     const purchaseQuerySelect = "SELECT * FROM tblPurchase";
