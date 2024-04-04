@@ -194,7 +194,7 @@
             purchase.Width,
             purchase.Length,
             purchase.OrderQty,
-            purchase.QtyReceived,
+            "",
             purchase.DateReceived,
             purchase.KgPerLength,
             purchase.PricePerLength,
@@ -209,7 +209,7 @@
             if (i === 7) {
               const input = document.createElement("input");
               input.type = "number"; // Assuming these are numerical values
-              input.value = cellData; // Set the current value as the input's default
+              input.value = purchase.QtyReceived; // Set the current value as the input's default
               input.name = "OrderQty";
               input.min = "0"; // Set minimum range
               input.max = purchase.OrderQty; // Set maximum range, adjust as needed
