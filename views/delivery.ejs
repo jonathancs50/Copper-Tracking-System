@@ -81,5 +81,89 @@
         <button type="submit" class="button">Submit</button>
       </p>
     </form>
+    <table id="purchaseTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Contract Number</th>
+            <th>Description</th>
+            <th>Height</th>
+            <th>Width</th>
+            <th>Length</th>
+            <th>OrderQty</th>
+            <th>Qty Received</th>
+            <th>Date Received</th>
+            <th>Kg Per Length</th>
+            <th>Price Per Length</th>
+            <th>Price Per Kg</th>
+            <th>Total Length Ordered</th>
+          </tr>
+        </thead>
+        <tbody></tbody> <!-- Empty tbody for dynamically populated rows -->
+      </table>
+      <script>
+        function handleSubmit(event) {
+          event.preventDefault();
+      
+          const selectedContractNumber = document.getElementById("contractNumberDropDown").value;
+      
+          fetch(`/delivery/purchases/${selectedContractNumber}`)
+            .then(response => {
+              if (!response.ok) {
+                throw new Error('Network response was not ok');
+              }
+              return response.json();
+            })
+            .then(data => {
+              populateTable(data);
+            })
+            .catch(error => {
+              console.error("Error fetching purchases:", error);
+            });
+        }
+      
+        function populateTable(purchases) {
+          const tableBody = document.querySelector("#purchaseTable tbody");
+          tableBody.innerHTML = ""; // Clear existing table body
+      
+          if (purchases.length === 0) {
+            // Handle case where no purchases are returned
+            const row = document.createElement("tr");
+            const cell = document.createElement("td");
+            cell.colSpan = "13"; // Span across all columns
+            cell.textContent = "No purchases found.";
+            row.appendChild(cell);
+            tableBody.appendChild(row);
+            return;
+          }
+      
+          purchases.forEach(purchase => {
+            const row = document.createElement("tr");
+            const cells = [
+              purchase.ID,
+              purchase.ContractNumber,
+              purchase.Description,
+              purchase.Height,
+              purchase.Width,
+              purchase.Length,
+              purchase.OrderQty,
+              purchase.QtyReceived,
+              purchase.DateReceived,
+              purchase.KgPerLength,
+              purchase.PricePerLength,
+              purchase.PricePerKg,
+              purchase.TotalLengthOrdered
+            ];
+      
+            cells.forEach(cellData => {
+              const cell = document.createElement("td");
+              cell.textContent = cellData;
+              row.appendChild(cell);
+            });
+      
+            tableBody.appendChild(row);
+          });
+        }
+      </script>
   </body>
 </html>
