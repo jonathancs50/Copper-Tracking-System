@@ -1,187 +1,198 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Purchases</title>
     <style>
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
 
-        th, td {
-            border: 1px solid #dddddd;
-            text-align: left;
-            padding: 8px;
-        }
+      th,
+      td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+      }
 
-        th {
-            background-color: #f2f2f2;
-        }
+      th {
+        background-color: #f2f2f2;
+      }
     </style>
-</head>
-<body>
-  <div class="navbar">
-    <ul>
+  </head>
+  <body>
+    <div class="navbar">
+      <ul>
         <li><a href="/purchase">Purchase</a></li>
         <li><a href="/delivery">Delivery</a></li>
         <li><a href="/issue">Issue</a></li>
         <li><a href="/return">Return</a></li>
         <li><a href="/count">Count</a></li>
         <li><a href="/audit">Audit</a></li>
-    </ul>
-</div>
-<h1>All Purchases</h1>
-<table>
-    <thead>
-    <tr>
-        <th>Contract Number</th>
-        <th>Description</th>
-        <th>Height</th>
-        <th>Width</th>
-        <th>Length</th>
-        <th>OrderQty</th>
-        <th>QtyRecieved</th>
-        <th>DateReceived</th>
-        <th>KgPerLength</th>
-        <th>PricePerLength</th>
-        <th>PricePerKg</th>
-        <th>TotalLengthOrdered</th>
-        <!-- Add additional columns here if needed -->
-    </tr>
-    </thead>
-    <tbody>
-    <% purchases.forEach(purchase => { %>
-    <tr>
-        <td><%= purchase.ContractNumber %></td>
-        <td><%= purchase.Description %></td>
-        <td><%= purchase.Height %></td>
-        <td><%= purchase.Width %></td>
-        <td><%= purchase.Length %></td>
-        <td><%= purchase.OrderQty %></td>
-        <td><%= purchase.QtyRecieved %></td>
-        <td><%= purchase.DateReceived %></td>
-        <td><%= purchase.KgPerLength %></td>
-        <td><%= purchase.PricePerLength %></td>
-        <td><%= purchase.PricePerKg %></td>
-        <td><%= purchase.TotalLengthOrdered %></td>
-        <!-- Add additional columns here if needed -->
-    </tr>
-    <% }) %>
-    </tbody>
-</table>
-<form id="purchaseForm" action="/purchase" method="post" onsubmit="handleSubmit(event)">
-    <h2>Purchase Order</h2>
-    <p>Enter purchase details</p>
+      </ul>
+    </div>
+    <h1>All Purchases</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Contract Number</th>
+          <th>Description</th>
+          <th>Height</th>
+          <th>Width</th>
+          <th>Length</th>
+          <th>OrderQty</th>
+          <th>QtyRecieved</th>
+          <th>DateReceived</th>
+          <th>KgPerLength</th>
+          <th>PricePerLength</th>
+          <th>PricePerKg</th>
+          <th>TotalLengthOrdered</th>
+          <!-- Add additional columns here if needed -->
+        </tr>
+      </thead>
+      <tbody>
+        <% purchases.forEach(purchase => { %>
+        <tr>
+          <td><%= purchase.ContractNumber %></td>
+          <td><%= purchase.Description %></td>
+          <td><%= purchase.Height %></td>
+          <td><%= purchase.Width %></td>
+          <td><%= purchase.Length %></td>
+          <td><%= purchase.OrderQty %></td>
+          <td><%= purchase.QtyRecieved %></td>
+          <td><%= purchase.DateReceived %></td>
+          <td><%= purchase.KgPerLength %></td>
+          <td><%= purchase.PricePerLength %></td>
+          <td><%= purchase.PricePerKg %></td>
+          <td><%= purchase.TotalLengthOrdered %></td>
+          <!-- Add additional columns here if needed -->
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+    <form
+      id="purchaseForm"
+      action="/purchase"
+      method="post"
+      onsubmit="handleSubmit(event)"
+    >
+      <h2>Purchase Order</h2>
+      <p>Enter purchase details</p>
 
-    <div class="control">
+      <div class="control">
         <label for="contractNumber">Contract Number:</label>
         <input id="contractNumber" name="contractNumber" required />
-    </div>
+      </div>
 
-    <div class="control-row">
+      <div class="control-row">
         <label for="descriptionDropdown">Description:</label>
         <select id="descriptionDropdown" name="descriptionDropdown">
-            <option disabled selected>Select a Description</option>
-            <% descriptions.forEach(description => { %>
-            <option value="<%= description.Description %>"><%= description.Description %></option>
-            <% }); %>
+          <option disabled selected>Select a Description</option>
+          <% descriptions.forEach(description => { %>
+          <option value="<%= description.Description %>">
+            <%= description.Description %>
+          </option>
+          <% }); %>
         </select>
-    </div>
+      </div>
 
-    <div class="control">
+      <div class="control">
         <label for="height">Height:</label>
         <input id="height" name="height" required />
-    </div>
+      </div>
 
-    <div class="control">
+      <div class="control">
         <label for="width">Width:</label>
         <input id="width" name="width" required />
-    </div>
-    <div class="control">
+      </div>
+      <div class="control">
         <label for="length">Length:</label>
         <input id="length" name="length" required />
-    </div>
+      </div>
 
-    <div class="control">
+      <div class="control">
         <label for="orderQuantity">Order Quantity:</label>
         <input id="orderQuantity" name="orderQuantity" required />
-    </div>
-    <div class="control">
+      </div>
+      <div class="control">
         <label for="kgPerLength">Kg/Length:</label>
         <input id="kgPerLength" name="kgPerLength" required />
-    </div>
-    <div class="control">
+      </div>
+      <div class="control">
         <label for="pricePerLength">Price/Length:</label>
         <input id="pricePerLength" name="pricePerLength" required />
-    </div>
+      </div>
 
-    <p class="form-actions">
+      <p class="form-actions">
         <button type="reset" class="button button-flat">Reset</button>
         <button type="submit" class="button">Submit</button>
-    </p>
-</form>
+      </p>
+    </form>
 
-<script>
- function handleSubmit(event) {
-    event.preventDefault(); // Prevent the default form submission behavior
+    <script>
+      function handleSubmit(event) {
+        event.preventDefault(); // Prevent the default form submission behavior
 
-    // Gather form data
-    const formData = new FormData(event.target); // event.target refers to the form element
+        // Gather form data
+        const formData = new FormData(event.target); // event.target refers to the form element
 
-    // Convert formData to JSON
-    const jsonData = {};
-    formData.forEach((value, key) => {
-        jsonData[key] = value;
-    });
+        // Convert formData to JSON
+        const jsonData = {};
+        formData.forEach((value, key) => {
+          jsonData[key] = value;
+        });
 
-    // Log the form data for debugging
-    // console.log('Form Data:', jsonData);
+        // Log the form data for debugging
+        // console.log('Form Data:', jsonData);
 
-    // Send the form data via AJAX
-    fetch('/purchase', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(jsonData)
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log('Form submitted successfully:', data);
-        window.location.reload();
-        // Optionally, perform any additional actions after form submission
-    })
-    .catch(error => {
-        console.error('Error submitting form:', error);
-    });
-}
+        // Send the form data via AJAX
+        fetch("/purchase", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(jsonData),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            console.log("Form submitted successfully:", data);
+            window.location.reload();
+            // Optionally, perform any additional actions after form submission
+          })
+          .catch((error) => {
+            console.error("Error submitting form:", error);
+          });
+      }
 
-
-
-    // Function to fetch details based on selected description
-    function fetchDetails() {
-        const selectedDescription = document.getElementById('descriptionDropdown').value;
+      // Function to fetch details based on selected description
+      function fetchDetails() {
+        const selectedDescription = document.getElementById(
+          "descriptionDropdown"
+        ).value;
         fetch(`/details/${selectedDescription}`)
-            .then(response => response.json())
-            .then(details => {
-                document.getElementById('height').value = details.Height;
-                document.getElementById('width').value = details.Width;
-                document.getElementById('length').value = details.Length;
-                document.getElementById('kgPerLength').value = details.KgPerLength;
-                document.getElementById('pricePerLength').value = details.PricePerLength;
-            })
-            .catch(error => console.error('Error fetching details:', error));
-    }
+          .then((response) => response.json())
+          .then((details) => {
+            document.getElementById("height").value = details.Height;
+            document.getElementById("width").value = details.Width;
+            document.getElementById("length").value = details.Length;
+            document.getElementById("kgPerLength").value = details.KgPerLength;
+            document.getElementById("pricePerLength").value =
+              details.PricePerLength;
+          })
+          .catch((error) => console.error("Error fetching details:", error));
+      }
 
-    // Listen for changes on the dropdown list
-    document.getElementById('descriptionDropdown').addEventListener('change', fetchDetails);
-</script>
-</body>
+      // Listen for changes on the dropdown list
+      document
+        .getElementById("descriptionDropdown")
+        .addEventListener("change", fetchDetails);
+    </script>
+  </body>
 </html>
