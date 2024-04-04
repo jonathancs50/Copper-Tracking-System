@@ -96,6 +96,20 @@ router.get("/details/:description", (req, res, next) => {
     });
 });
 
+// Route handler for deleting a row
+router.delete('/delete/:id', (req, res, next) => {
+    const idToDelete = req.params.id;
+    const query = "DELETE FROM tblPurchase WHERE ID = ?";
+
+    global.db.run(query, [idToDelete], function(err) {
+        if (err) {
+            next(err);
+        } else {
+            res.json({ message: 'Row deleted successfully' }); // Send JSON response
+        }
+    });
+});
+
 // Error handling middleware
 router.use((err, req, res, next) => {
     console.error(err.stack);

@@ -244,6 +244,28 @@
       document
         .getElementById("descriptionDropdown")
         .addEventListener("change", fetchDetails);
+
+
+        // Event listener for delete button click
+  document.getElementById('deleteBtn').addEventListener('click', function() {
+    // Get selected ID from dropdown
+    const selectedId = document.getElementById('idDropdown').value;
+    
+    // Send DELETE request to server
+    fetch(`/delete/${selectedId}`, {
+      method: 'DELETE'
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      // Reload the page after successful deletion
+      window.location.reload();
+    })
+    .catch(error => {
+      console.error('Error deleting row:', error);
+    });
+  });
     </script>
   </body>
 </html>
