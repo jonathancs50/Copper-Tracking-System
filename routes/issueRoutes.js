@@ -39,22 +39,51 @@ router.get("/purchases/:contractNumber", (req, res, next) => {
 
 
   router.post("/insertIssueTransaction", (req, res, next) => {
-    const { updateData } = req.body;
+    console.log("Received POST request to insertIssueTransaction");
+    
+    const { insertData } = req.body;
+    console.log("Received data for insertion:", insertData);
+
     const currentDate = new Date().toLocaleDateString(); // Get current date
-  
-    // Loop through updateData and update delivery quantities in the database
-    updateData.forEach(({contractNumber,panelNumber,description,height,width,length,qty }) => {
-      const query = "INSERT INTO tblTransactionHistory (ContractNumber,Panel,Description,Height,Width,Length,Qty,Draw,DateOfTransaction)VALUES (?,?,?,?,?,?,?,1,?);";
-      const values = [contractNumber,panelNumber,description,height,width,length,qty,1,currentDate];
-  
-      global.db.run(query, values, function(err) {
-        if (err) {
-          console.error("Error updating delivery:", err);
+    console.log("Current date:", currentDate);
+
+    // Prepare the SQL query
+    const query = "INSERT INTO tblTransactionHistory (ContractNumber, Panel, Description, Height, Width, Length, Qty, Draw, DateOfTransaction) VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?)";
+    console.log("SQL query:", query);
+
+    // Array to store any errors that occur during insertion
+    const insertionErrors = [];
+
+    // Loop through insertData and insert each record into the database
+    insertData.forEach(({ contractNumber, panelNumber, description, height, width, length, qty }) => {
+        // Validate the data before insertion
+        if (contractNumber && panelNumber && description && height && width && length && qty) {
+            const values = [contractNumber, panelNumber, description, height, width, length, qty, currentDate];
+            console.log("Inserting values:", values);
+
+            // Execute the SQL query
+            global.db.run(query, values, function(err) {
+                if (err) {
+                    insertionErrors.push(err.message); // Store the error message
+                    console.error("Error inserting data:", err.message);
+                }
+            });
+        } else {
+            insertionErrors.push("Missing data for insertion"); // Store the error message
+            console.error("Missing data for insertion");
         }
-      });
     });
-  
-    res.json({ message: "Delivery quantities updated successfully" });
-  });
+
+    if (insertionErrors.length > 0) {
+        // If there are any insertion errors, send an error response
+        console.error("Insertion errors:", insertionErrors);
+        res.status(500).json({ error: "Error inserting data into tblTransactionHistory", details: insertionErrors });
+    } else {
+        // If insertion is successful, send a success response
+        console.log("Data inserted successfully into tblTransactionHistory");
+        res.json({ message: "Data inserted successfully into tblTransactionHistory" });
+    }
+});
+
 module.exports = router;
 
