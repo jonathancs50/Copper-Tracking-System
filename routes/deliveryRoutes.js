@@ -1,36 +1,22 @@
 const express = require("express");
 const router = express.Router();
 
+// Route handler for rendering the delivery page with purchases and descriptions
 router.get("/", (req, res, next) => {
-  // Render HTML using EJS template
-  res.render("delivery.ejs");
-});
-// Route handler for inserting a purchase
-// Route handler for fetching purchases and descriptions
-router.get("/delivery", (req, res, next) => {
-  const purchaseQuerySelect = "SELECT * FROM tblPurchase";
-  const descriptionQuerySelect = "SELECT Description FROM tblPriceList";
+  const contractNumberSelect = "SELECT DISTINCT ContractNumber FROM tblPurchase";
 
   // Fetch purchases
-  global.db.all(purchaseQuerySelect, (err, purchases) => {
+  global.db.all(contractNumberSelect, (err, contractNumbers) => {
     if (err) {
       next(err);
       return;
     }
 
-    // Fetch descriptions
-    global.db.all(descriptionQuerySelect, (err, descriptions) => {
-      if (err) {
-        next(err);
-        return;
-      }
-
       // Render HTML using EJS template with purchases and descriptions passed to it
       res.render("delivery", {
-        purchases: purchases,
-        descriptions: descriptions,
+        contractNumbers:contractNumbers
       });
-    });
   });
 });
+
 module.exports = router;

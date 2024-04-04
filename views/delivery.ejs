@@ -5,6 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Delivery</title>
     <!-- Add your CSS styles here -->
+    <style>
+        table {
+          border-collapse: collapse;
+          width: 100%;
+        }
+  
+        th,
+        td {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+        }
+  
+        th {
+          background-color: #f2f2f2;
+        }
+        .hide-column {
+          display: none;
+        }
+  
+        #purchaseTable td:nth-child(1),
+        #purchaseTable th:nth-child(1),
+        #deleteRow {
+          display: none;
+        }
+      </style>
   </head>
   <body>
     <!-- Navigation bar -->
@@ -27,45 +53,33 @@
     <!-- Add your JavaScript files here -->
 
     <h1>Delivery</h1>
-    <table id="purchaseTable">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Contract Number</th>
-          <th>Description</th>
-          <th>Height</th>
-          <th>Width</th>
-          <th>Length</th>
-          <th>OrderQty</th>
-          <th>QtyRecieved</th>
-          <th>DateReceived</th>
-          <th>KgPerLength</th>
-          <th>PricePerLength</th>
-          <th>PricePerKg</th>
-          <th>TotalLengthOrdered</th>
-          <!-- Add additional columns here if needed -->
-        </tr>
-      </thead>
-      <tbody>
-        <% purchases.forEach(purchase => { %>
-        <tr>
-          <td><%= purchase.ID %></td>
-          <td><%= purchase.ContractNumber %></td>
-          <td><%= purchase.Description %></td>
-          <td><%= purchase.Height %></td>
-          <td><%= purchase.Width %></td>
-          <td><%= purchase.Length %></td>
-          <td><%= purchase.OrderQty %></td>
-          <td><%= purchase.QtyRecieved %></td>
-          <td><%= purchase.DateReceived %></td>
-          <td><%= purchase.KgPerLength %></td>
-          <td><%= purchase.PricePerLength %></td>
-          <td><%= purchase.PricePerKg %></td>
-          <td><%= purchase.TotalLengthOrdered %></td>
-          <!-- Add additional columns here if needed -->
-        </tr>
-        <% }) %>
-      </tbody>
-    </table>
+    
+
+    <form
+    id="purchaseForm"
+    class="deleteMode"
+    action="/purchase"
+    method="post"
+    onsubmit="handleSubmit(event)"
+  >
+    <h2>Purchase Order</h2>
+    <p>Enter purchase details</p>
+
+    <div class="control-row">
+        <label for="contractNumberDropDown">Contract Number:</label>
+      <select id="contractNumberDropDown" name="contractNumberDropDown">
+        <option disabled selected>Select a Contract Number</option>
+        <% contractNumbers.forEach(contractNumbers => { %>
+        <option value="<%= contractNumbers.ContractNumber %>">
+          <%= contractNumbers.ContractNumber %>
+        </option>
+        <% }); %>
+      </select>
+    </div>
+
+    <p class="form-actions">
+        <button type="submit" class="button">Submit</button>
+      </p>
+    </form>
   </body>
 </html>
