@@ -7,6 +7,8 @@ const sqlite3 = require("sqlite3").verbose();
 const purchaseRoutes = require("./routes/purchaseRoutes");
 const deliveryRoutes = require("./routes/deliveryRoutes");
 const issueRoutes = require("./routes/issueRoutes");
+const returnRoutes = require("./routes/returnRoutes");
+
 
 // Initialize express app
 const app = express();
@@ -39,6 +41,7 @@ global.db = new sqlite3.Database("./mainDB.db", function (err) {
 app.use("/", purchaseRoutes);
 app.use("/delivery", deliveryRoutes);
 app.use("/issue", issueRoutes);
+app.use("/return", returnRoutes);
 
 // Start the server
 app.listen(port, () => {
