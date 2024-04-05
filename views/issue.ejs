@@ -97,8 +97,10 @@
       </table>
       <button id="issueBtn">Issue To Panel</button>
       <script>
-        let qtyInStock=[];
+          let qtyInStock=[];
 document.getElementById("issueBtn").addEventListener("click", function() {
+
+
   // Get all rows of the table
   const rows = document.querySelectorAll("#purchaseTable tbody tr");
 
@@ -154,7 +156,6 @@ document.getElementById("issueBtn").addEventListener("click", function() {
 
 function handleSubmit(event) {
   event.preventDefault();
-  qtyInStock=[];
   const selectedContractNumber = document.getElementById("contractNumberDropDown").value;
 
   fetch(`/delivery/purchases/${selectedContractNumber}`)
@@ -249,32 +250,33 @@ function fetchQtyInStockForPurchases(purchases) {
         return response.json();
       })
       .then((data) => {
-        console.log("Received quantity in stock data:", data);
+        // console.log("Received quantity in stock data:", data);
         if (Array.isArray(data) && data.length > 0 && data[0].hasOwnProperty("QtyReceived")) {
-          updateQtyInStock(data[0].QtyReceived, purchase.ID);
-          console.log(data);
-          console.log("object");
+          for(let i=0;i<data.length;i++)
+          {
+            updateQtyInStock(data[i].QtyReceived, purchase.ID);
+          }
+
         } else {
           throw new Error("Quantity in stock data is missing or invalid.");
         }
       })
       .catch((error) => {
-        console.error("Error fetching quantity in stock:", error);
+        console.error("NOT IMPORTANT Error fetching quantity in stock:", error);
       });
   });
 }
 
 function updateQtyInStock(qtyInStockData, purchaseId) {
+  // console.log(qtyInStockData);
   // Extract the quantity from the data received from the server
   qtyInStock.push(qtyInStockData);
-  console.log(qtyInStockData);
-  console.log(qtyInStock);
   for(let i = 1; i<qtyInStock.length+1;i++){
 
     const cell8 = document.querySelector(`#purchaseTable tbody tr:nth-child(${i}) td:nth-child(8)`);
 
 // Update the content of the cell with the quantity in stock
-cell8.textContent = qtyInStock[i-2];
+cell8.textContent = qtyInStock[i-1];
   }
 
 }

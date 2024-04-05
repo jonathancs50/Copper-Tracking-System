@@ -45,9 +45,8 @@ router.post("/updateDelivery", (req, res, next) => {
     // Loop through updateData and execute each update query sequentially
     updateData.forEach(({ id, contractNumber, deliveryQty, description }, index) => {
         const query1 = "UPDATE tblPurchase SET QtyReceived = ?, DateReceived = ? WHERE ID = ? AND ContractNumber = ?";
-        const query2 = "UPDATE tblStock SET QtyReceived = ?, DateReceived = ? WHERE Description = ? AND ContractNumber = ?";
+        const query2 = "UPDATE tblStock SET QtyReceived = ?, DateReceived = ? WHERE ID = ? AND ContractNumber = ?";
         const values1 = [deliveryQty, currentDate, id, contractNumber];
-        const values2 = [deliveryQty, currentDate, description, contractNumber];
 
         // Execute the first update query
         global.db.run(query1, values1, function(err) {
@@ -56,7 +55,7 @@ router.post("/updateDelivery", (req, res, next) => {
                 next(err); // Forward error to error handler
             } else {
                 // Execute the second update query after the first one completes
-                global.db.run(query2, values2, function(err) {
+                global.db.run(query2, values1, function(err) {
                     if (err) {
                         console.error("Error updating delivery:", err);
                         next(err); // Forward error to error handler
