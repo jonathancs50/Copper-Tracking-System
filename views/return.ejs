@@ -43,7 +43,7 @@
     <form
     id="purchaseForm"
     class="deleteMode"
-    action="/purchase"
+    action="/return"
     method="post"
     onsubmit="handleSubmit(event)"
   >
@@ -84,7 +84,7 @@
       <form
       id="purchaseForm"
       class="deleteMode"
-      action="/purchase"
+      action="/return"
       method="post"
       onsubmit="handleReturn(event)"
     >
@@ -140,12 +140,54 @@
 
       <p class="form-actions">
         <button type="reset" class="button button-flat">Reset</button>
-        <button type="submit" class="button">Submit</button>
+        <button type="submit"  class="button">Submit</button>
       </p>
     </form>
 
       <script>
 let insertData=[];        
+
+function handleReturn(event) {
+
+  let sendingData=[];
+
+    // Extract necessary data from the row
+    const contractNumber = insertData[0].ContractNumber;
+    const description = insertData[0].Description; 
+    const panelNumber=insertData[0].Panel;
+    const height = insertData[0].Height; 
+    const width = insertData[0].Width; 
+    const length = document.getElementById("length").value;
+    const qty = document.getElementById("returnQty").value;
+
+    // Add data to insertData array
+    sendingData.push({ contractNumber, panelNumber, description, height, width, length, qty });
+  
+
+
+// console.log("Data to be inserted:", insertData); // Debugging line
+
+// Send insertData to the server
+fetch("/return/insertReturnTransaction", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({ sendingData })
+})
+.then(response => {
+  if (!response.ok) {
+    throw new Error("Network response was not ok");
+  }
+  return response.json();
+})
+.then(data => {
+  console.log(data); // Handle response from server if needed
+})
+.catch(error => {
+  console.error("Error inserting data:", error);
+});
+};
 
 function populateData(data) {
   document.getElementById('contractNumberLblInput').textContent = data.ContractNumber;
@@ -171,6 +213,8 @@ function populateData(data) {
     .then((data) => {
       populateData(data[0]);
       insertData.push(data[0]);
+      console.log(insertData);
+
       // populateTable(data);TODO
     })
     .catch((error) => {
@@ -205,25 +249,7 @@ function handleSubmit(event) {
       console.error("Error fetching purchases:", error);
     });
 }
-function handleReturn(event) {
-  event.preventDefault();
-  qtyInStock=[];
-  const selectedContractNumber = document.getElementById("contractNumberDropDown").value;
 
-  fetch(`/return/transactions/${selectedContractNumber}`)
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      return response.json();
-    })
-    .then((data) => {
-      populateTable(data);
-    })
-    .catch((error) => {
-      console.error("Error fetching purchases:", error);
-    });
-}
 function populateTable(purchases) {
   const tableBody = document.querySelector("#purchaseTable tbody");
   tableBody.innerHTML = ""; // Clear existing table body
