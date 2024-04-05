@@ -57,7 +57,7 @@ router.get("/id/:selectedValue", (req, res, next) => {
 router.post("/insertReturnTransaction", (req, res, next) => {
   const { sendingData } = req.body;
   const currentDate = new Date().toLocaleDateString();
-  console.log(sendingData);
+  // console.log(sendingData);
 
   // Prepare the SQL queries
   const query1 = "INSERT INTO tblTransactionHistory (ContractNumber, Panel, Description, Height, Width, Length, Qty, Return, DateOfTransaction) VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?)";

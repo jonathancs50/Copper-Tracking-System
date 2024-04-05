@@ -64,12 +64,14 @@
       <label for="contractNumberDropDown">Contract Number:</label>
       <select id="contractNumberDropDown" name="contractNumberDropDown">
         <option disabled selected>Select a Contract Number</option>
+        <option value="Stores">Stores</option>
         <% contractNumbers.forEach(contractNumbers => { %>
         <option value="<%= contractNumbers.ContractNumber %>">
           <%= contractNumbers.ContractNumber %>
         </option>
         <% }); %>
       </select>
+      <button type="button" onclick="refreshPage()">Refresh Page</button>
     </div>
 
     <p class="form-actions">
@@ -157,7 +159,24 @@ document.getElementById("issueBtn").addEventListener("click", function() {
 function handleSubmit(event) {
   event.preventDefault();
   const selectedContractNumber = document.getElementById("contractNumberDropDown").value;
-
+console.log(selectedContractNumber);
+if(selectedContractNumber=="Stores"){
+  fetch(`/issue/purchasesStores`)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      populateTable(data);
+      fetchQtyInStockForReturn(data);
+      console.log(data);
+    })
+    .catch((error) => {
+      console.error("Error fetching purchases:", error);
+    });
+}else{
   fetch(`/delivery/purchases/${selectedContractNumber}`)
     .then((response) => {
       if (!response.ok) {
@@ -168,10 +187,13 @@ function handleSubmit(event) {
     .then((data) => {
       populateTable(data);
       fetchQtyInStockForPurchases(data);
+      console.log(data);
     })
     .catch((error) => {
       console.error("Error fetching purchases:", error);
     });
+}
+
 }
 
 function populateTable(purchases) {
@@ -256,6 +278,37 @@ function fetchQtyInStockForPurchases(purchases) {
           {
             updateQtyInStock(data[i].QtyReceived, purchase.ID);
           }
+          data=[];
+
+        } else {
+          throw new Error("Quantity in stock data is missing or invalid.");
+        }
+      })
+      .catch((error) => {
+        console.error("NOT IMPORTANT Error fetching quantity in stock:", error);
+      });
+  });
+}
+
+function fetchQtyInStockForReturn(purchases) {
+  purchases.forEach((purchase) => {
+    const contractNumber = purchase.ContractNumber;
+    const description = purchase.Description;
+    fetch(`/issue/returnQty`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        // console.log("Received quantity in stock data:", data);
+        if (Array.isArray(data) && data.length > 0 && data[0].hasOwnProperty("QtyReturned")) {
+          for(let i=0;i<data.length;i++)
+          {
+            updateQtyInStock(data[i].QtyReturned, purchase.ID);
+            console.log(data[i].QtyReturned);
+          }
 
         } else {
           throw new Error("Quantity in stock data is missing or invalid.");
@@ -280,6 +333,9 @@ cell8.textContent = qtyInStock[i-1];
   }
 
 }
+function refreshPage() {
+    window.location.reload();
+  }
       </script>
     <!-- Add your JavaScript files here -->
 </body>

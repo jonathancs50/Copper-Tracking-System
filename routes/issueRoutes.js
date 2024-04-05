@@ -38,6 +38,22 @@ router.get("/purchases/:contractNumber", (req, res, next) => {
     });
   });
 
+  router.get("/purchasesStores", (req, res, next) => {
+    const purchaseQuery = "SELECT * FROM tblReturns;";
+  
+    // Fetch purchases for the specified contract number
+    global.db.all(purchaseQuery, (err, purchases) => {
+      if (err) {
+        next(err);
+        return;
+      }
+  
+      // Send the fetched purchases as JSON response
+
+      res.json(purchases);
+    });
+  });
+
 
   router.post("/insertIssueTransaction", (req, res, next) => {
     const { insertData } = req.body;
@@ -92,7 +108,7 @@ router.get('/qtyInStock', (req, res, next) => {
     const { contractNumber, description } = req.query;
     const values = [contractNumber, description];
     // console.log(values);
-    const purchaseQuery = "SELECT QtyReceived FROM tblStock WHERE ContractNumber = ? AND Description = ? OR Description = 'Unique';";
+    const purchaseQuery = "SELECT QtyReceived FROM tblStock WHERE ContractNumber = ? AND Description = ?;";
   
     // Fetch quantity in stock for the specified contract number and description
     global.db.all(purchaseQuery, values, function(err, rows) {
@@ -103,6 +119,22 @@ router.get('/qtyInStock', (req, res, next) => {
         res.json(rows);
         // console.log(rows); // Send the quantity in stock as JSON response
     });
+});
+
+// Define the route to fetch quantity in stock
+router.get('/returnQty', (req, res, next) => {
+  // console.log(values);
+  const purchaseQuery = "SELECT QtyReturned FROM tblReturns;";
+
+  // Fetch quantity in stock for the specified contract number and description
+  global.db.all(purchaseQuery, function(err, rows) {
+      if (err) {
+          next(err);
+          return;
+      }
+      res.json(rows);
+      // console.log(rows); // Send the quantity in stock as JSON response
+  });
 });
 
 
