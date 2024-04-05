@@ -34,7 +34,23 @@ router.get("/transactions/:contractNumber", (req, res, next) => {
 
     // Send the fetched purchases as JSON response
     res.json(purchases);
-    console.log(purchases);
+    // console.log(purchases);
+  });
+});
+
+router.get("/id/:selectedValue", (req, res, next) => {
+  const id = req.params.selectedValue;
+  const purchaseQuery = "SELECT * FROM tblTransactionHistory WHERE ID = ? AND Draw = 1";
+
+  // Fetch purchases for the specified contract number
+  global.db.all(purchaseQuery, [id], (err, row) => {
+    if (err) {
+      next(err);
+      return;
+    }
+
+    // Send the fetched purchases as JSON response
+    res.json(row);
   });
 });
 

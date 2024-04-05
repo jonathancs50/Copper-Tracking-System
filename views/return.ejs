@@ -24,11 +24,7 @@
         display: none;
       }
 
-      #purchaseTable td:nth-child(1),
-      #purchaseTable th:nth-child(1),
-      #deleteRow {
-        display: none;
-      }
+    
     </style>
   </head>
   <body>
@@ -95,27 +91,42 @@
       <h2>Purchase Order</h2>
       <p>Enter purchase details</p>
 
+
+      <div class="control-row">
+        <label for="idDropdown">ID:</label>
+        <select id="idDropdown" name="idDropdown">          
+          <option disabled selected>Select ID</option>
+        </select>        
+      </div>
+
       <div class="control">
         <label for="contractNumber">Contract Number:</label>
-        <label for="contractNumber"></label>
+        <label id="contractNumberLblInput"></label>
+      </div>
+
+
+
+      <div class="control-row">
+        <label for="panelLbl">Panel:</label>
+        <label id="panelLblInput">Panel:</label>
+        
       </div>
 
       <div class="control-row">
-        <label for="descriptionDropdown">Description:</label>
-        <select id="descriptionDropdown" name="descriptionDropdown">
-          <option disabled selected>Select a Description</option>
-          </option>
-        </select>
+        <label for="descriptionLbl">Description:</label>
+        <label id="descriptionLblInput">Description:</label>        
+
       </div>
 
       <div class="control">
-        <label for="height">Height:</label>
-        <input id="height" name="height" required />
+        <label for="heightLbl">Height:</label>
+        <label id="heightLblInput">Height:</label>
       </div>
 
       <div class="control">
-        <label for="width">Width:</label>
-        <input id="width" name="width" required />
+        <label for="widthLbl">Width:</label>
+        <label id="widthLblInput">Width:</label>
+
       </div>
       <div class="control">
         <label for="length">Length:</label>
@@ -134,10 +145,51 @@
     </form>
 
       <script>
+let insertData=[];        
+
+function populateData(data) {
+  document.getElementById('contractNumberLblInput').textContent = data.ContractNumber;
+  document.getElementById('panelLblInput').textContent = data.Panel;
+  document.getElementById('descriptionLblInput').textContent = data.Description;
+  document.getElementById('heightLblInput').textContent = data.Height;
+  document.getElementById('widthLblInput').textContent = data.Width;
+  // Assuming you want to set the value of the length input field
+  document.getElementById('length').value = data.Length;
+}
+
+   // Define the function to handle the selection change
+  function handleSelectionChange(selectedValue) {
+    // console.log("Selected value:", selectedValue);
+    // Add your logic here
+    fetch(`/return/id/${selectedValue}`)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      populateData(data[0]);
+      insertData.push(data[0]);
+      // populateTable(data);TODO
+    })
+    .catch((error) => {
+      console.error("Error fetching purchases:", error);
+    });
+  }
+
+  // Attach the change event listener to the dropdown
+  document.getElementById('idDropdown').addEventListener('change', function() {
+    const selectedValue = this.value;
+    handleSelectionChange(selectedValue);
+  });
+ 
 function handleSubmit(event) {
   event.preventDefault();
   qtyInStock=[];
   const selectedContractNumber = document.getElementById("contractNumberDropDown").value;
+
+
 
   fetch(`/return/transactions/${selectedContractNumber}`)
     .then((response) => {
@@ -187,6 +239,7 @@ function populateTable(purchases) {
     return;
   }
 
+  const idDropdown = document.getElementById('idDropdown');
   purchases.forEach((purchase) => {
     const row = document.createElement("tr");
     row.setAttribute("data-id", purchase.ID); // Add data-id attribute for identifying the row
@@ -201,6 +254,10 @@ function populateTable(purchases) {
       purchase.Qty,
       purchase.DateOfTransaction,
     ];
+    const option = document.createElement('option');
+    option.value = purchase.ID;
+    option.textContent = purchase.ID;
+    idDropdown.appendChild(option);
 
     cells.forEach((cellData, i) => {
   const cell = document.createElement("td");
