@@ -99,9 +99,9 @@ router.post("/insertReturnTransaction", (req, res, next) => {
       console.error("Insertion errors:", insertionErrors);
       res.status(500).json({ error: "Error inserting data", details: insertionErrors });
   } 
-  // else {
-  //     res.json({ message: "Data inserted successfully into tblTransactionHistory and tblStock" });
-  // }
+  else {
+      res.json({ message: "Data inserted successfully into tblTransactionHistory and tblStock" });
+  }
 });
 
   module.exports = router;
