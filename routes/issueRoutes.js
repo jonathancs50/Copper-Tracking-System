@@ -91,7 +91,7 @@ router.get("/purchases/:contractNumber", (req, res, next) => {
 router.get('/qtyInStock', (req, res, next) => {
     const { contractNumber, description } = req.query;
     const values = [contractNumber, description];
-    console.log(values);
+    // console.log(values);
     const purchaseQuery = "SELECT QtyReceived FROM tblStock WHERE ContractNumber = ? AND Description = ?;";
   
     // Fetch quantity in stock for the specified contract number and description
@@ -101,7 +101,7 @@ router.get('/qtyInStock', (req, res, next) => {
             return;
         }
         res.json(rows);
-        console.log(rows); // Send the quantity in stock as JSON response
+        // console.log(rows); // Send the quantity in stock as JSON response
     });
 });
 

@@ -42,5 +42,131 @@
         <li><a href="/audit">Audit</a></li>
       </ul>
     </div>
+    <h2>Return Receipt</h2>
+    <p>Enter return details</p>
+
+    <div class="control-row">
+      <label for="contractNumberDropDown">Contract Number:</label>
+      <select id="contractNumberDropDown" name="contractNumberDropDown">
+        <option disabled selected>Select a Contract Number</option>
+        <% contractNumbers.forEach(contractNumbers => { %>
+        <option value="<%= contractNumbers.ContractNumber %>">
+          <%= contractNumbers.ContractNumber %>
+        </option>
+        <% }); %>
+      </select>
+    </div>
+
+    <p class="form-actions">
+      <button type="submit" class="button">Submit</button>
+    </p>
+  </form>
+    <table id="purchaseTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Contract Number</th>
+            <th>Panel Number</th>
+            <th>Description</th>
+            <th>Height</th>
+            <th>Width</th>
+            <th>Length</th>
+            <th>Qty In Stock</th>
+            <th>Issue Qty</th>
+            <th>Kg Per Length</th>
+            <th>Total Length Ordered</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+        <!-- Empty tbody for dynamically populated rows -->
+      </table>
+      <button id="issueBtn">Issue To Panel</button>
+
+      <script>
+function handleSubmit(event) {
+  event.preventDefault();
+  qtyInStock=[];
+  const selectedContractNumber = document.getElementById("contractNumberDropDown").value;
+
+  fetch(`/delivery/purchases/${selectedContractNumber}`)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      populateTable(data);
+      fetchQtyInStockForPurchases(data);
+    })
+    .catch((error) => {
+      console.error("Error fetching purchases:", error);
+    });
+}
+
+function populateTable(purchases) {
+  const tableBody = document.querySelector("#purchaseTable tbody");
+  tableBody.innerHTML = ""; // Clear existing table body
+
+  if (purchases.length === 0) {
+    // Handle case where no purchases are returned
+    const row = document.createElement("tr");
+    const cell = document.createElement("td");
+    cell.colSpan = "13"; // Span across all columns
+    cell.textContent = "No purchases found.";
+    row.appendChild(cell);
+    tableBody.appendChild(row);
+    return;
+  }
+
+  purchases.forEach((purchase) => {
+    const row = document.createElement("tr");
+    row.setAttribute("data-id", purchase.ID); // Add data-id attribute for identifying the row
+    const cells = [
+      purchase.ID,
+      purchase.ContractNumber,
+      "",
+      purchase.Description,
+      purchase.Height,
+      purchase.Width,
+      purchase.Length,
+      "", // Leave "Qty In Stock" blank for now
+      "",
+      purchase.KgPerLength,
+      purchase.TotalLengthOrdered,
+    ];
+
+    cells.forEach((cellData, i) => {
+  const cell = document.createElement("td");
+
+  if (i === 8) {
+    // Placeholder for "Issue Qty" cell
+    const input = document.createElement("input");
+    input.type = "number"; // Assuming these are numerical values
+    input.value = ""; // Set the current value as the input's default
+    input.name = "Qty";
+    input.min = "0"; // Set minimum range
+    cell.appendChild(input);
+  } else if(i ===2){
+const input = document.createElement("input");
+    input.type = "number"; // Assuming these are numerical values
+    input.value = "1"; // Set the current value as the input's default
+    input.name = "Panel";
+    input.min = "1"; // Set minimum range
+    cell.appendChild(input);
+
+  }else if (i === 7) {
+    // Placeholder for "Qty In Stock" cell
+    cell.textContent = "Fetching..."; // Display fetching message temporarily
+  } else {
+    cell.textContent = cellData;
+  }
+  row.appendChild(cell);
+});
+
+    tableBody.appendChild(row);
+  });
+}
+      </script>
   </body>
 </html>
