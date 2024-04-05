@@ -44,6 +44,13 @@
     </div>
     <h2>Return Receipt</h2>
     <p>Enter return details</p>
+    <form
+    id="purchaseForm"
+    class="deleteMode"
+    action="/purchase"
+    method="post"
+    onsubmit="handleSubmit(event)"
+  >
 
     <div class="control-row">
       <label for="contractNumberDropDown">Contract Number:</label>
@@ -71,16 +78,60 @@
             <th>Height</th>
             <th>Width</th>
             <th>Length</th>
-            <th>Qty In Stock</th>
-            <th>Issue Qty</th>
-            <th>Kg Per Length</th>
-            <th>Total Length Ordered</th>
+            <th>Qty Issued</th>
+            <th>Issue Date</th>
           </tr>
         </thead>
         <tbody></tbody>
         <!-- Empty tbody for dynamically populated rows -->
       </table>
-      <button id="issueBtn">Issue To Panel</button>
+      <form
+      id="purchaseForm"
+      class="deleteMode"
+      action="/purchase"
+      method="post"
+      onsubmit="handleReturn(event)"
+    >
+      <h2>Purchase Order</h2>
+      <p>Enter purchase details</p>
+
+      <div class="control">
+        <label for="contractNumber">Contract Number:</label>
+        <label for="contractNumber"></label>
+      </div>
+
+      <div class="control-row">
+        <label for="descriptionDropdown">Description:</label>
+        <select id="descriptionDropdown" name="descriptionDropdown">
+          <option disabled selected>Select a Description</option>
+          </option>
+        </select>
+      </div>
+
+      <div class="control">
+        <label for="height">Height:</label>
+        <input id="height" name="height" required />
+      </div>
+
+      <div class="control">
+        <label for="width">Width:</label>
+        <input id="width" name="width" required />
+      </div>
+      <div class="control">
+        <label for="length">Length:</label>
+        <input id="length" name="length" required />
+      </div>
+
+      <div class="control">
+        <label for="returnQty">Return Quantity:</label>
+        <input id="returnQty" name="returnQty" required />
+      </div>
+
+      <p class="form-actions">
+        <button type="reset" class="button button-flat">Reset</button>
+        <button type="submit" class="button">Submit</button>
+      </p>
+    </form>
 
       <script>
 function handleSubmit(event) {
@@ -88,7 +139,7 @@ function handleSubmit(event) {
   qtyInStock=[];
   const selectedContractNumber = document.getElementById("contractNumberDropDown").value;
 
-  fetch(`/delivery/purchases/${selectedContractNumber}`)
+  fetch(`/return/transactions/${selectedContractNumber}`)
     .then((response) => {
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -97,13 +148,30 @@ function handleSubmit(event) {
     })
     .then((data) => {
       populateTable(data);
-      fetchQtyInStockForPurchases(data);
     })
     .catch((error) => {
       console.error("Error fetching purchases:", error);
     });
 }
+function handleReturn(event) {
+  event.preventDefault();
+  qtyInStock=[];
+  const selectedContractNumber = document.getElementById("contractNumberDropDown").value;
 
+  fetch(`/return/transactions/${selectedContractNumber}`)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      populateTable(data);
+    })
+    .catch((error) => {
+      console.error("Error fetching purchases:", error);
+    });
+}
 function populateTable(purchases) {
   const tableBody = document.querySelector("#purchaseTable tbody");
   tableBody.innerHTML = ""; // Clear existing table body
@@ -125,42 +193,19 @@ function populateTable(purchases) {
     const cells = [
       purchase.ID,
       purchase.ContractNumber,
-      "",
+      purchase.Panel,
       purchase.Description,
       purchase.Height,
       purchase.Width,
       purchase.Length,
-      "", // Leave "Qty In Stock" blank for now
-      "",
-      purchase.KgPerLength,
-      purchase.TotalLengthOrdered,
+      purchase.Qty,
+      purchase.DateOfTransaction,
     ];
 
     cells.forEach((cellData, i) => {
   const cell = document.createElement("td");
-
-  if (i === 8) {
-    // Placeholder for "Issue Qty" cell
-    const input = document.createElement("input");
-    input.type = "number"; // Assuming these are numerical values
-    input.value = ""; // Set the current value as the input's default
-    input.name = "Qty";
-    input.min = "0"; // Set minimum range
-    cell.appendChild(input);
-  } else if(i ===2){
-const input = document.createElement("input");
-    input.type = "number"; // Assuming these are numerical values
-    input.value = "1"; // Set the current value as the input's default
-    input.name = "Panel";
-    input.min = "1"; // Set minimum range
-    cell.appendChild(input);
-
-  }else if (i === 7) {
-    // Placeholder for "Qty In Stock" cell
-    cell.textContent = "Fetching..."; // Display fetching message temporarily
-  } else {
     cell.textContent = cellData;
-  }
+  
   row.appendChild(cell);
 });
 

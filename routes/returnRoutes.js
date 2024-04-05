@@ -20,4 +20,22 @@ router.get("/", (req, res, next) => {
     });
   });
 
+  // Route handler for fetching purchases based on contract number
+router.get("/transactions/:contractNumber", (req, res, next) => {
+  const contractNumber = req.params.contractNumber;
+  const purchaseQuery = "SELECT * FROM tblTransactionHistory WHERE ContractNumber = ? AND Draw = 1";
+
+  // Fetch purchases for the specified contract number
+  global.db.all(purchaseQuery, [contractNumber], (err, purchases) => {
+    if (err) {
+      next(err);
+      return;
+    }
+
+    // Send the fetched purchases as JSON response
+    res.json(purchases);
+    console.log(purchases);
+  });
+});
+
   module.exports = router;

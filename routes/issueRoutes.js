@@ -92,7 +92,7 @@ router.get('/qtyInStock', (req, res, next) => {
     const { contractNumber, description } = req.query;
     const values = [contractNumber, description];
     // console.log(values);
-    const purchaseQuery = "SELECT QtyReceived FROM tblStock WHERE ContractNumber = ? AND Description = ?;";
+    const purchaseQuery = "SELECT QtyReceived FROM tblStock WHERE ContractNumber = ? AND Description = ? OR Description = 'Unique';";
   
     // Fetch quantity in stock for the specified contract number and description
     global.db.all(purchaseQuery, values, function(err, rows) {

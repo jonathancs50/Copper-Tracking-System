@@ -252,6 +252,8 @@ function fetchQtyInStockForPurchases(purchases) {
         console.log("Received quantity in stock data:", data);
         if (Array.isArray(data) && data.length > 0 && data[0].hasOwnProperty("QtyReceived")) {
           updateQtyInStock(data[0].QtyReceived, purchase.ID);
+          console.log(data);
+          console.log("object");
         } else {
           throw new Error("Quantity in stock data is missing or invalid.");
         }
@@ -265,12 +267,14 @@ function fetchQtyInStockForPurchases(purchases) {
 function updateQtyInStock(qtyInStockData, purchaseId) {
   // Extract the quantity from the data received from the server
   qtyInStock.push(qtyInStockData);
+  console.log(qtyInStockData);
+  console.log(qtyInStock);
   for(let i = 1; i<qtyInStock.length+1;i++){
 
     const cell8 = document.querySelector(`#purchaseTable tbody tr:nth-child(${i}) td:nth-child(8)`);
 
 // Update the content of the cell with the quantity in stock
-cell8.textContent = qtyInStock[i-1];
+cell8.textContent = qtyInStock[i-2];
   }
 
 }
