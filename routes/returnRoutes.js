@@ -4,7 +4,7 @@ const router = express.Router();
 // Route handler for rendering the delivery page with purchases and descriptions
 router.get("/", (req, res, next) => {
     const contractNumberSelect =
-      "SELECT DISTINCT ContractNumber FROM tblTransactionHistory";
+      "SELECT DISTINCT ContractNumber FROM tblTransactionHistory ORDER BY ContractNumber DESC;";
   
     // Fetch purchases
     global.db.all(contractNumberSelect, (err, contractNumbers) => {
