@@ -104,38 +104,38 @@ router.get("/purchases/:contractNumber", (req, res, next) => {
 
 
 // Define the route to fetch quantity in stock
-router.get('/qtyInStock', (req, res, next) => {
-    const { contractNumber, description } = req.query;
-    const values = [contractNumber, description];
-    // console.log(values);
-    const purchaseQuery = "SELECT QtyReceived FROM tblStock WHERE ContractNumber = ? AND Description = ?;";
+// router.get('/qtyInStock', (req, res, next) => {
+//     const { contractNumber, description } = req.query;
+//     const values = [contractNumber, description];
+//     // console.log(values);
+//     const purchaseQuery = "SELECT QtyReceived FROM tblStock WHERE ContractNumber = ? AND Description = ?;";
   
-    // Fetch quantity in stock for the specified contract number and description
-    global.db.all(purchaseQuery, values, function(err, rows) {
-        if (err) {
-            next(err);
-            return;
-        }
-        res.json(rows);
-        // console.log(rows); // Send the quantity in stock as JSON response
-    });
-});
+//     // Fetch quantity in stock for the specified contract number and description
+//     global.db.all(purchaseQuery, values, function(err, rows) {
+//         if (err) {
+//             next(err);
+//             return;
+//         }
+//         res.json(rows);
+//         // console.log(rows); // Send the quantity in stock as JSON response
+//     });
+// });
 
-// Define the route to fetch quantity in stock
-router.get('/returnQty', (req, res, next) => {
-  // console.log(values);
-  const purchaseQuery = "SELECT QtyReturned FROM tblReturns;";
+// // Define the route to fetch quantity in stock
+// router.get('/returnQty', (req, res, next) => {
+//   // console.log(values);
+//   const purchaseQuery = "SELECT QtyReturned FROM tblReturns;";
 
-  // Fetch quantity in stock for the specified contract number and description
-  global.db.all(purchaseQuery, function(err, rows) {
-      if (err) {
-          next(err);
-          return;
-      }
-      res.json(rows);
-      // console.log(rows); // Send the quantity in stock as JSON response
-  });
-});
+//   // Fetch quantity in stock for the specified contract number and description
+//   global.db.all(purchaseQuery, function(err, rows) {
+//       if (err) {
+//           next(err);
+//           return;
+//       }
+//       res.json(rows);
+//       // console.log(rows); // Send the quantity in stock as JSON response
+//   });
+// });
 
 
 module.exports = router;
