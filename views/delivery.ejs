@@ -5,33 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="node_modules\tabulator-tables\dist\css/tabulator_modern.min.css" rel="stylesheet">
     <title>Delivery</title>
-    <!-- Add your CSS styles here -->
-    <style>
-      table {
-        border-collapse: collapse;
-        width: 100%;
-      }
-
-      th,
-      td {
-        border: 1px solid #dddddd;
-        text-align: left;
-        padding: 8px;
-      }
-
-      th {
-        background-color: #f2f2f2;
-      }
-      .hide-column {
-        display: none;
-      }
-
-      #purchaseTable td:nth-child(1),
-      #purchaseTable th:nth-child(1),
-      #deleteRow {
-        display: none;
-      }
-    </style>
   </head>
   <body>
     <!-- Navigation bar -->
@@ -81,7 +54,7 @@
         <button type="submit" class="button">Submit</button>
       </p>
     </form>
-    <table id="purchaseTable">
+    <table id="purchaseTable" style="display: none;">
       <thead>
         <tr>
           <th>ID</th>
@@ -195,7 +168,7 @@
             purchase.Width,
             purchase.Length,
             purchase.OrderQty,
-            "",
+            purchase.QtyReceived,
             purchase.DateReceived,
             purchase.KgPerLength,
             purchase.TotalLengthOrdered,
@@ -205,22 +178,23 @@
             const cell = document.createElement("td");
 
             cell.textContent = cellData;
-            if (i === 7) {
-              const input = document.createElement("input");
-              input.type = "number"; // Assuming these are numerical values
-              input.value = purchase.QtyReceived; // Set the current value as the input's default
-              input.name = "OrderQty";
-              input.min = "0"; // Set minimum range
-              input.max = purchase.OrderQty; // Set maximum range, adjust as needed
-              cell.appendChild(input);
-            } else {
-              cell.textContent = cellData;
-            }
+            // if (i === 7) {
+            //   const input = document.createElement("input");
+            //   input.type = "number"; // Assuming these are numerical values
+            //   input.value = purchase.QtyReceived; // Set the current value as the input's default
+            //   input.name = "QtyReceived";
+            //   input.min = "0"; // Set minimum range
+            //   input.max = purchase.OrderQty; // Set maximum range, adjust as needed
+            //   cell.appendChild(input);
+            // } else {
+            //   cell.textContent = cellData;
+            // }
             row.appendChild(cell);
           });
 
           tableBody.appendChild(row);
         });
+        document.getElementById("purchaseTable").style.display="";
         tab();
       }
 
@@ -237,12 +211,10 @@
         { title: "Width", field: "Width" , width: 100},
         { title: "Length", field: "Length" , width: 100},
         { title: "OrderQty", field: "OrderQty" , width: 150},
-        { title: "Qty Received", field: "OrderQty" , width: 150},
+        { title: "Qty Received", field: "QtyReceived" ,editor:"input", width: 150},
         { title: "Date Received", field: "DateReceived" , width: 150},
-        { title: "KgPerLength", field: "KgPerLength" , width: 150},
-        { title: "PricePerLength", field: "PricePerLength" , width: 175},
-        { title: "PricePerKg", field: "PricePerKg" },
-        { title: "TotalLengthOrdered", field: "TotalLengthOrdered" }
+        { title: "Kg Per Length", field: "KgPerLength" , width: 150},
+        { title: "Total Length Ordered", field: "TotalLengthOrdered" }
       ],
 
 
