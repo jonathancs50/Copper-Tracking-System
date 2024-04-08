@@ -1,3 +1,6 @@
+
+
+
 // Import necessary modules
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -26,7 +29,7 @@ app.use(express.json()); // For JSON data
 app.set("view engine", "ejs");
 
 // Serve static files from the 'public' directory
-app.use(express.static(__dirname + "/public"));
+app.use('/node_modules', express.static(__dirname + '/node_modules'));
 
 // Database setup
 global.db = new sqlite3.Database("./mainDB.db", function (err) {

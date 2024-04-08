@@ -3,89 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="node_modules\tabulator-tables\dist\css/tabulator_modern.min.css" rel="stylesheet">
     <title>Purchases</title>
-    <style>
-
-      table.scrolldown {
-
-          width: 100%;
-
-
-          /* border-collapse: collapse; */
-
-          border-spacing: 0;
-
-          border: 2px solid black;
-
-      }
-
-
-      /* To display the block as level element */
-
-      table.scrolldown tbody,
-
-      table.scrolldown thead {
-
-          display: block;
-
-      }
-
-
-      thead tr th {
-
-          height: 40px;
-
-          line-height: 40px;
-
-      }
-
-
-      table.scrolldown tbody {
-
-
-          /* Set the height of table body */
-
-          height: 50px;
-
-
-          /* Set vertical scroll */
-
-          overflow-y: auto;
-
-
-          /* Hide the horizontal scroll */
-
-          overflow-x: hidden;
-
-      }
-
-
-      tbody {
-
-          border-top: 2px solid black;
-
-      }
-
-
-      tbody td,
-
-      thead th {
-
-          width: 200px;
-
-          border-right: 2px solid black;
-
-      }
-
-
-      td {
-
-          text-align: center;
-
-      }
-
-  </style>
   </head>
+  <style>
+    /* CSS code to style Tabulator table headers */
+    .tabulator .tabulator-header {
+      color: Black; /* Set text color to white */
+    }
+  </style>
   <body>
     <div class="navbar">
       <ul>
@@ -208,33 +134,32 @@
       <button id="deleteBtn">Delete</button>
     </div>
 
-    <button id="toggleColumnBtn">Edit Table</button>
-    <script>
-      //Function to toggle between Delete mode
-      document.addEventListener("DOMContentLoaded", function () {
-        document
-          .getElementById("toggleColumnBtn")
-          .addEventListener("click", function () {
-            var columnNumber = 0; // Adjust this to target the right column (0-indexed)
-            var table = document.getElementById("purchaseTable");
-            var rows = table.rows;
-
-            for (var i = 0; i < rows.length; i++) {
-              var cell = rows[i].cells[columnNumber];
-              if (cell.style.display === "none" || !cell.style.display) {
-                cell.style.display = "table-cell"; // Make the cell visible
-              } else {
-                cell.style.display = "none"; // Hide the cell
-              }
-            }
-
-            // Toggle all divs with the 'deleteMode' class
-            var divs = document.querySelectorAll(".deleteMode");
-            divs.forEach(function (div) {
-              div.style.display = div.style.display === "none" ? "" : "none";
-            });
-          });
-      });
+       <script src="node_modules\tabulator-tables\dist/js/tabulator.min.js"></script>
+  <script>
+    // Initialize Tabulator on the purchaseTable
+    var table = new Tabulator("#purchaseTable", {
+      // Define column headers based on thead
+      columns: [
+        { title: "ID", field: "ID", width: 75 },
+        { title: "Contract Number", field: "ContractNumber" ,minWidth: 175 },
+        { title: "Description", field: "Description",width: 125  },
+        { title: "Height", field: "Height" , width: 100},
+        { title: "Width", field: "Width" , width: 100},
+        { title: "Length", field: "Length" , width: 100},
+        { title: "OrderQty", field: "OrderQty" , width: 150},
+        { title: "DateReceived", field: "DateReceived" , width: 150},
+        { title: "KgPerLength", field: "KgPerLength" , width: 150},
+        { title: "PricePerLength", field: "PricePerLength" , width: 175},
+        { title: "PricePerKg", field: "PricePerKg" },
+        { title: "TotalLengthOrdered", field: "TotalLengthOrdered" }
+      ],
+      layout: "fitColumns",
+      width: "100%",
+       // Set height to 400px
+    height: 400,
+    // Enable vertical scrolling
+    scrollVertical: true,
+    });
 
       function handleSubmit(event) {
         event.preventDefault(); // Prevent the default form submission behavior
