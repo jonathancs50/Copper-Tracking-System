@@ -48,6 +48,7 @@
           </option>
           <% }); %>
         </select>
+        <button type="button" onclick="refreshPage()">Refresh Page</button>
       </div>
 
       <p class="form-actions">
@@ -76,49 +77,52 @@
     <button id="updateDeliveryBtn">Update Delivery</button>
     <script src="node_modules\tabulator-tables\dist/js/tabulator.min.js"></script>
     <script>
-         document.getElementById("updateDeliveryBtn").addEventListener("click", function() {
-    // Get all rows of the table
-    const rows = document.querySelectorAll("#purchaseTable tbody tr");
+       var table;
+       function refreshPage() {
+    window.location.reload();
+  }
+       document.getElementById("updateDeliveryBtn").addEventListener("click", function() {
+    // Get table data
+    var tableData = table.getData(true); // Use getData(true) to get raw data values
 
     // Array to store data for update
     const updateData = [];
 
-    // Iterate over rows and extract delivery quantities
-    rows.forEach(row => {
-      const deliveryQtyInput = row.querySelector("input[name='OrderQty']");
-      const deliveryQty = deliveryQtyInput ? deliveryQtyInput.value.trim() : null;
-
-      if (deliveryQty !== null && deliveryQty !== "") {
-        // Extract other necessary data from the row
-        const id = row.cells[0].textContent; // Assuming ID is in the first column
-        const contractNumber = row.cells[1].textContent;
-        const description=row.cells[2].textContent; // Assuming Contract Number is in the second column
-        // Add data to updateData array
-        updateData.push({ id, contractNumber, deliveryQty,description });
-      }
+    // Iterate over table data and extract delivery quantities
+    tableData.forEach(row => {
+        const receivedQty = row.QtyReceived;
+        if (receivedQty !== null && receivedQty !== "") {
+            // Extract other necessary data from the row
+            const id = row.ID;
+            const contractNumber = row.ContractNumber;
+            const description = row.Description;
+            // Add data to updateData array
+            updateData.push({ id, contractNumber, receivedQty, description });
+            console.log(updateData);
+        }
     });
 
     // Send updateData to the server
     fetch("/delivery/updateDelivery", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ updateData })
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ updateData })
     })
     .then(response => {
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      return response.json();
+        if (!response.ok) {
+            throw new Error("Network response was not ok");
+        }
+        return response.json();
     })
     .then(data => {
-      console.log(data); // Handle response from server if needed
+        console.log(data); // Handle response from server if needed
     })
     .catch(error => {
-      console.error("Error updating delivery:", error);
+        console.error("Error updating delivery:", error);
     });
-  });
+});
 
   
       function handleSubmit(event) {
@@ -201,7 +205,7 @@
       function tab()
       {
          // Initialize Tabulator on the purchaseTable
-    var table = new Tabulator("#purchaseTable", {
+    table = new Tabulator("#purchaseTable", {
       // Define column headers based on thead
       columns: [
         { title: "ID", field: "ID", width: 75 },

@@ -43,10 +43,10 @@ router.post("/updateDelivery", (req, res, next) => {
     const currentDate = new Date().toLocaleDateString(); // Get current date
 
     // Loop through updateData and execute each update query sequentially
-    updateData.forEach(({ id, contractNumber, deliveryQty, description }, index) => {
+    updateData.forEach(({ id, contractNumber, receivedQty }, index) => {
         const query1 = "UPDATE tblPurchase SET QtyReceived = ?, DateReceived = ? WHERE ID = ? AND ContractNumber = ?";
         const query2 = "UPDATE tblStock SET QtyReceived = ?, DateReceived = ? WHERE ID = ? AND ContractNumber = ?";
-        const values1 = [deliveryQty, currentDate, id, contractNumber];
+        const values1 = [receivedQty, currentDate, id, contractNumber];
 
         // Execute the first update query
         global.db.run(query1, values1, function(err) {
