@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="node_modules\tabulator-tables\dist\css/tabulator_modern.min.css" rel="stylesheet">
     <title>Delivery</title>
     <!-- Add your CSS styles here -->
     <style>
@@ -100,6 +101,7 @@
       <!-- Empty tbody for dynamically populated rows -->
     </table>
     <button id="updateDeliveryBtn">Update Delivery</button>
+    <script src="node_modules\tabulator-tables\dist/js/tabulator.min.js"></script>
     <script>
          document.getElementById("updateDeliveryBtn").addEventListener("click", function() {
     // Get all rows of the table
@@ -219,6 +221,49 @@
 
           tableBody.appendChild(row);
         });
+        tab();
+      }
+
+      function tab()
+      {
+         // Initialize Tabulator on the purchaseTable
+    var table = new Tabulator("#purchaseTable", {
+      // Define column headers based on thead
+      columns: [
+        { title: "ID", field: "ID", width: 75 },
+        { title: "Contract Number", field: "ContractNumber" ,minWidth: 175 },
+        { title: "Description", field: "Description",width: 125  },
+        { title: "Height", field: "Height" , width: 100},
+        { title: "Width", field: "Width" , width: 100},
+        { title: "Length", field: "Length" , width: 100},
+        { title: "OrderQty", field: "OrderQty" , width: 150},
+        { title: "Qty Received", field: "OrderQty" , width: 150},
+        { title: "Date Received", field: "DateReceived" , width: 150},
+        { title: "KgPerLength", field: "KgPerLength" , width: 150},
+        { title: "PricePerLength", field: "PricePerLength" , width: 175},
+        { title: "PricePerKg", field: "PricePerKg" },
+        { title: "TotalLengthOrdered", field: "TotalLengthOrdered" }
+      ],
+
+
+      // <th>ID</th>
+      //     <th>Contract Number</th>
+      //     <th>Description</th>
+      //     <th>Height</th>
+      //     <th>Width</th>
+      //     <th>Length</th>
+      //     <th>OrderQty</th>
+      //     <th>Qty Received</th>
+      //     <th>Date Received</th>
+      //     <th>Kg Per Length</th>
+      //     <th>Total Length Ordered</th>
+      layout: "fitColumns",
+      width: "100%",
+       // Set height to 400px
+    height: 400,
+    // Enable vertical scrolling
+    scrollVertical: true,
+    });
       }
     </script>
   </body>
