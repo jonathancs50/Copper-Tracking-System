@@ -217,10 +217,7 @@ function handleSubmit(event) {
 
         // Gather form data
         const formData = new FormData(event.target); // event.target refers to the form element
-        console.log(formData);
-        const contractNumberSelected = document.getElementById(
-          "contractNumberDropDown"
-        ).value;
+       
         // Convert formData to JSON
         const jsonData = {};
         formData.forEach((value, key) => {
