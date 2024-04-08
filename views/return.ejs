@@ -3,28 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="node_modules\tabulator-tables\dist\css/tabulator_modern.min.css" rel="stylesheet">
     <title>Purchases</title>
     <style>
-      table {
-        border-collapse: collapse;
-        width: 100%;
+ /* CSS code to style Tabulator table headers */
+ .tabulator .tabulator-header {
+        color: Black; /* Set text color to white */
       }
-
-      th,
-      td {
-        border: 1px solid #dddddd;
-        text-align: left;
-        padding: 8px;
-      }
-
-      th {
-        background-color: #f2f2f2;
-      }
-      .hide-column {
-        display: none;
-      }
-
-    
     </style>
   </head>
   <body>
@@ -64,7 +49,7 @@
       <button type="submit" class="button">Submit</button>
     </p>
   </form>
-    <table id="purchaseTable">
+    <table id="purchaseTable" style="display: none;">
         <thead>
           <tr>
             <th>ID</th>
@@ -144,8 +129,11 @@
       </p>
     </form>
 
-      <script>
-let insertData=[];        
+    <script src="node_modules\tabulator-tables\dist/js/tabulator.min.js"></script>
+    <script>
+       var table;
+let insertData=[];  
+      
 
 function handleReturn(event) {
   event.preventDefault(); 
@@ -295,7 +283,34 @@ function populateTable(purchases) {
 
     tableBody.appendChild(row);
   });
+  document.getElementById("purchaseTable").style.display="";
+  tab();
 }
+
+function tab()
+      {
+         // Initialize Tabulator on the purchaseTable
+    table = new Tabulator("#purchaseTable", {
+      // Define column headers based on thead
+      columns: [
+        { title: "ID", field: "ID", width: 75 },
+        { title: "Contract Number", field: "ContractNumber",minWidth: 175,maxWidth: 300 },
+        { title: "Panel Number", field: "Panel", width: 150},
+        { title: "Description", field: "Description",width: 125  },
+        { title: "Height", field: "Height" , width: 100},
+        { title: "Width", field: "Width" , width: 100},
+        { title: "Length", field: "Length" , width: 100},
+        { title: "Qty Issued", field: "Qty" , width: 150},
+        { title: "Issue Date", field: "DateOfTransaction", width: 150},
+      ],
+      layout: "fitColumns",
+      width: "100%",
+       // Set height to 400px
+    height: 400,
+    // Enable vertical scrolling
+    scrollVertical: true,
+    });
+      }
       </script>
   </body>
 </html>
