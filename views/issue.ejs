@@ -114,6 +114,8 @@ document.getElementById("issueBtn").addEventListener("click", function() {
     // Check if the quantity input is not null
     const qtyInput = row.querySelector("input[name='Qty']");
     const qty = qtyInput ? qtyInput.value.trim() : null;
+    const contractInput = row.querySelector('input[name="ContractNumber"]');
+    const contractNumber = contractInput ? contractInput.value.trim() : null;
     const panelInput = row.querySelector("input[name='Panel']");
     const panelNumber = panelInput ? panelInput.value.trim() : null;
 
@@ -121,7 +123,6 @@ document.getElementById("issueBtn").addEventListener("click", function() {
 
     if (qty !== null && qty !== "") {
       // Extract necessary data from the row
-      const contractNumber = row.cells[1].textContent;  
       const description = row.cells[3].textContent; 
       const height = row.cells[4].textContent; 
       const width = row.cells[5].textContent; 
@@ -250,7 +251,14 @@ const input = document.createElement("input");
   }else if (i === 7) {
     // Placeholder for "Qty In Stock" cell
     cell.textContent = "Fetching..."; // Display fetching message temporarily
-  } else {
+  } else if(i ===1){
+const input = document.createElement("input");
+    input.type = "text"; // Assuming these are numerical values
+    input.value = purchase.ContractNumber; // Set the current value as the input's default
+    input.name = "ContractNumber";
+    cell.appendChild(input);
+
+  }else {
     cell.textContent = cellData;
   }
   row.appendChild(cell);

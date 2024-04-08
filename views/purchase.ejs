@@ -5,31 +5,86 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Purchases</title>
     <style>
-      table {
-        border-collapse: collapse;
-        width: 100%;
+
+      table.scrolldown {
+
+          width: 100%;
+
+
+          /* border-collapse: collapse; */
+
+          border-spacing: 0;
+
+          border: 2px solid black;
+
       }
 
-      th,
+
+      /* To display the block as level element */
+
+      table.scrolldown tbody,
+
+      table.scrolldown thead {
+
+          display: block;
+
+      }
+
+
+      thead tr th {
+
+          height: 40px;
+
+          line-height: 40px;
+
+      }
+
+
+      table.scrolldown tbody {
+
+
+          /* Set the height of table body */
+
+          height: 50px;
+
+
+          /* Set vertical scroll */
+
+          overflow-y: auto;
+
+
+          /* Hide the horizontal scroll */
+
+          overflow-x: hidden;
+
+      }
+
+
+      tbody {
+
+          border-top: 2px solid black;
+
+      }
+
+
+      tbody td,
+
+      thead th {
+
+          width: 200px;
+
+          border-right: 2px solid black;
+
+      }
+
+
       td {
-        border: 1px solid #dddddd;
-        text-align: left;
-        padding: 8px;
+
+          text-align: center;
+
       }
 
-      th {
-        background-color: #f2f2f2;
-      }
-      .hide-column {
-        display: none;
-      }
-
-      #purchaseTable td:nth-child(1),
-      #purchaseTable th:nth-child(1),
-      #deleteRow {
-        display: none;
-      }
-    </style>
+  </style>
   </head>
   <body>
     <div class="navbar">
@@ -53,7 +108,6 @@
           <th>Width</th>
           <th>Length</th>
           <th>OrderQty</th>
-          <th>QtyRecieved</th>
           <th>DateReceived</th>
           <th>KgPerLength</th>
           <th>PricePerLength</th>
@@ -72,7 +126,6 @@
           <td><%= purchase.Width %></td>
           <td><%= purchase.Length %></td>
           <td><%= purchase.OrderQty %></td>
-          <td><%= purchase.QtyRecieved %></td>
           <td><%= purchase.DateReceived %></td>
           <td><%= purchase.KgPerLength %></td>
           <td><%= purchase.PricePerLength %></td>

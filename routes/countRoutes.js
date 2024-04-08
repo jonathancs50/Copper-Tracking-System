@@ -5,7 +5,7 @@ const router = express.Router();
 router.get("/", (req, res, next) => {
     const purchaseQuerySelect = "SELECT * FROM tblCount";
     const descriptionQuerySelect = "SELECT Description FROM tblPriceList";
-    const contractNumberSelect ="SELECT DISTINCT ContractNumber FROM tblStock";
+    const contractNumberSelect ="SELECT DISTINCT ContractNumber FROM tblTransactionHistory";
     // Fetch purchases
     global.db.all(purchaseQuerySelect, (err, purchases) => {
         if (err) {
