@@ -3,34 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="node_modules\tabulator-tables\dist\css/tabulator_modern.min.css" rel="stylesheet">
     <title>Issue</title>
     <!-- Add your CSS styles here -->
     <style>
-        table {
-          border-collapse: collapse;
-          width: 100%;
-        }
-  
-        th,
-        td {
-          border: 1px solid #dddddd;
-          text-align: left;
-          padding: 8px;
-        }
-  
-        th {
-          background-color: #f2f2f2;
-        }
-        .hide-column {
-          display: none;
-        }
-  
-        #purchaseTable td:nth-child(1),
-        #purchaseTable th:nth-child(1),
-        #deleteRow {
-          display: none;
-        }
-      </style>
+      /* CSS code to style Tabulator table headers */
+      .tabulator .tabulator-header {
+        color: Black; /* Set text color to white */
+      }
+    </style>
 </head>
 <body>
 
@@ -78,7 +59,7 @@
       <button type="submit" class="button">Submit</button>
     </p>
   </form>
-    <table id="purchaseTable">
+    <table id="purchaseTable" style="display: none;">
         <thead>
           <tr>
             <th>ID</th>
@@ -98,38 +79,38 @@
         <!-- Empty tbody for dynamically populated rows -->
       </table>
       <button id="issueBtn">Issue To Panel</button>
-      <script>
+      <script src="node_modules\tabulator-tables\dist/js/tabulator.min.js"></script>
+    <script>
+       var table;
           let qtyInStock=[];
 document.getElementById("issueBtn").addEventListener("click", function() {
 
 
-  // Get all rows of the table
-  const rows = document.querySelectorAll("#purchaseTable tbody tr");
+   // Get table data
+   var tableData = table.getData(true); // Use getData(true) to get raw data values
 
   // Array to store data for insertion
   const insertData = [];
 
   // Iterate over rows and extract data for insertion
-  rows.forEach(row => {
+  tableData.forEach(row => {
     // Check if the quantity input is not null
-    const qtyInput = row.querySelector("input[name='Qty']");
-    const qty = qtyInput ? qtyInput.value.trim() : null;
-    const contractInput = row.querySelector('input[name="ContractNumber"]');
-    const contractNumber = contractInput ? contractInput.value.trim() : null;
-    const panelInput = row.querySelector("input[name='Panel']");
-    const panelNumber = panelInput ? panelInput.value.trim() : null;
+    const qty = row.Qty;
+    const contractNumber = row.ContractNumber;
+    const panelNumber = row.Panel;
 
     // console.log("Extracted qty value:", qty); // Debugging line
 
-    if (qty !== null && qty !== "") {
+    if (qty !== null && qty !== "" && qty !== "Qty") {
       // Extract necessary data from the row
-      const description = row.cells[3].textContent; 
-      const height = row.cells[4].textContent; 
-      const width = row.cells[5].textContent; 
-      const length = row.cells[6].textContent; 
+      const description = row.Description; 
+      const height = row.Height; 
+      const width = row.Width; 
+      const length = row.Length; 
 
       // Add data to insertData array
       insertData.push({ contractNumber, panelNumber, description, height, width, length, qty });
+      console.log(insertData+"Insert Data"); // Debugging line
     }
   });
 
@@ -155,8 +136,9 @@ document.getElementById("issueBtn").addEventListener("click", function() {
   .catch(error => {
     console.error("Error inserting data:", error);
   });
+  window.location.reload();
 });
-
+  
 function handleSubmit(event) {
   event.preventDefault();
   const selectedContractNumber = document.getElementById("contractNumberDropDown").value;
@@ -218,55 +200,56 @@ function populateTable(purchases) {
     const cells = [
       purchase.ID,
       purchase.ContractNumber,
-      "",
+      "Panel",
       purchase.Description,
       purchase.Height,
       purchase.Width,
       purchase.Length,
-      "", // Leave "Qty In Stock" blank for now
-      "",
+      purchase.QtyReceived, // Leave "Qty In Stock" blank for now
+      "Qty",
       purchase.KgPerLength,
       purchase.TotalLengthOrdered,
     ];
 
     cells.forEach((cellData, i) => {
-  const cell = document.createElement("td");
+            const cell = document.createElement("td");
 
-  if (i === 8) {
-    // Placeholder for "Issue Qty" cell
-    const input = document.createElement("input");
-    input.type = "number"; // Assuming these are numerical values
-    input.value = ""; // Set the current value as the input's default
-    input.name = "Qty";
-    input.min = "0"; // Set minimum range
-    cell.appendChild(input);
-  } else if(i ===2){
-const input = document.createElement("input");
-    input.type = "number"; // Assuming these are numerical values
-    input.value = "1"; // Set the current value as the input's default
-    input.name = "Panel";
-    input.min = "1"; // Set minimum range
-    cell.appendChild(input);
-
-  }else if (i === 7) {
-    // Placeholder for "Qty In Stock" cell
-    cell.textContent = "Fetching..."; // Display fetching message temporarily
-  } else if(i ===1){
-const input = document.createElement("input");
-    input.type = "text"; // Assuming these are numerical values
-    input.value = purchase.ContractNumber; // Set the current value as the input's default
-    input.name = "ContractNumber";
-    cell.appendChild(input);
-
-  }else {
-    cell.textContent = cellData;
-  }
-  row.appendChild(cell);
-});
+            cell.textContent = cellData;
+            row.appendChild(cell);
+          });
 
     tableBody.appendChild(row);
   });
+  document.getElementById("purchaseTable").style.display="";
+  tab();
 }
+
+function tab()
+      {
+         // Initialize Tabulator on the purchaseTable
+    table = new Tabulator("#purchaseTable", {
+      // Define column headers based on thead
+      columns: [
+        { title: "ID", field: "ID", width: 75 },
+        { title: "Contract Number", field: "ContractNumber",editor:"input" ,minWidth: 175 },
+        { title: "Panel Number", field: "Panel",editor:"input", width: 150},
+        { title: "Description", field: "Description",width: 125  },
+        { title: "Height", field: "Height" , width: 100},
+        { title: "Width", field: "Width" , width: 100},
+        { title: "Length", field: "Length" , width: 100},
+        { title: "Qty In Stock", field: "OrderQty" , width: 150},
+        { title: "Issue Qty", field: "Qty" ,editor:"input", width: 150},
+        { title: "Kg Per Length", field: "KgPerLength" , width: 150},
+        { title: "Total Length Ordered", field: "TotalLengthOrdered" }
+      ],
+      layout: "fitColumns",
+      width: "100%",
+       // Set height to 400px
+    height: 400,
+    // Enable vertical scrolling
+    scrollVertical: true,
+    });
+      }
 
 function fetchQtyInStockForPurchases(purchases) {
   purchases.forEach((purchase) => {

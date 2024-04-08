@@ -5,7 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="node_modules\tabulator-tables\dist\css/tabulator_modern.min.css" rel="stylesheet">
     <title>Delivery</title>
+    <style>
+      /* CSS code to style Tabulator table headers */
+      .tabulator .tabulator-header {
+        color: Black; /* Set text color to white */
+      }
+    </style>
   </head>
+ 
   <body>
     <!-- Navigation bar -->
     <div class="navbar">
@@ -98,7 +105,6 @@
             const description = row.Description;
             // Add data to updateData array
             updateData.push({ id, contractNumber, receivedQty, description });
-            console.log(updateData);
         }
     });
 
@@ -182,17 +188,6 @@
             const cell = document.createElement("td");
 
             cell.textContent = cellData;
-            // if (i === 7) {
-            //   const input = document.createElement("input");
-            //   input.type = "number"; // Assuming these are numerical values
-            //   input.value = purchase.QtyReceived; // Set the current value as the input's default
-            //   input.name = "QtyReceived";
-            //   input.min = "0"; // Set minimum range
-            //   input.max = purchase.OrderQty; // Set maximum range, adjust as needed
-            //   cell.appendChild(input);
-            // } else {
-            //   cell.textContent = cellData;
-            // }
             row.appendChild(cell);
           });
 
@@ -222,17 +217,7 @@
       ],
 
 
-      // <th>ID</th>
-      //     <th>Contract Number</th>
-      //     <th>Description</th>
-      //     <th>Height</th>
-      //     <th>Width</th>
-      //     <th>Length</th>
-      //     <th>OrderQty</th>
-      //     <th>Qty Received</th>
-      //     <th>Date Received</th>
-      //     <th>Kg Per Length</th>
-      //     <th>Total Length Ordered</th>
+
       layout: "fitColumns",
       width: "100%",
        // Set height to 400px
