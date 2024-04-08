@@ -3,32 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="node_modules\tabulator-tables\dist\css/tabulator_modern.min.css" rel="stylesheet">
     <title>Copper Count</title>
     <style>
-        table {
-          border-collapse: collapse;
-          width: 100%;
-        }
-  
-        th,
-        td {
-          border: 1px solid #dddddd;
-          text-align: left;
-          padding: 8px;
-        }
-  
-        th {
-          background-color: #f2f2f2;
-        }
-        .hide-column {
-          display: none;
-        }
-  
-        #purchaseTable td:nth-child(1),
-        #purchaseTable th:nth-child(1),
-        #deleteRow {
-          display: none;
-        }
+       /* CSS code to style Tabulator table headers */
+       .tabulator .tabulator-header {
+        color: Black; /* Set text color to white */
+      }
       </style>
 </head>
 <body>
@@ -44,7 +25,7 @@
         </ul>
     </div>
     <h1>Copper Count</h1>
-    <table id="purchaseTable">
+    <table id="purchaseTable" style="display: none;">
       <thead>
         <tr>
           <th>ID</th>
@@ -126,7 +107,9 @@
         <button type="submit" class="button">Submit</button>
       </p>
     </form>
+    <script src="node_modules\tabulator-tables\dist/js/tabulator.min.js"></script>
     <script>
+       var table;
         
         function handlePopulate() {
         event.preventDefault();
@@ -210,7 +193,34 @@
 
     tableBody.appendChild(row);
   });
+  document.getElementById("purchaseTable").style.display="";
+  tab();
 }
+
+function tab()
+      {
+         // Initialize Tabulator on the purchaseTable
+    table = new Tabulator("#purchaseTable", {
+      // Define column headers based on thead
+      columns: [
+        { title: "ID", field: "ID", width: 75 },
+        { title: "Contract Number", field: "ContractNumber" ,minWidth: 175 },
+        { title: "Panel Number", field: "Panel" ,minWidth: 175 },
+        { title: "Description", field: "Description",width: 125  },
+        { title: "Height", field: "Height" , width: 100},
+        { title: "Width", field: "Width" , width: 100},
+        { title: "Length", field: "Length" , width: 100},
+        { title: "Notes", field: "Notes" , width: 150},
+      ],
+
+      layout: "fitColumns",
+      width: "100%",
+       // Set height to 400px
+    height: 400,
+    // Enable vertical scrolling
+    scrollVertical: true,
+    });
+      }
 
 function handleSubmit(event) {
         event.preventDefault(); // Prevent the default form submission behavior
