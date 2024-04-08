@@ -5,7 +5,7 @@ const router = express.Router();
 router.get("/", (req, res, next) => {
     const purchaseQuerySelect = "SELECT * FROM tblCount";
     const descriptionQuerySelect = "SELECT Description FROM tblPriceList";
-    const contractNumberSelect ="SELECT DISTINCT ContractNumber FROM tblCount";
+    const contractNumberSelect ="SELECT DISTINCT ContractNumber FROM tblStock";
     // Fetch purchases
     global.db.all(purchaseQuerySelect, (err, purchases) => {
         if (err) {
@@ -50,5 +50,28 @@ router.get("/purchases/:contractNumber", (req, res, next) => {
       res.json(purchases);
     });
   });
+
+// Route handler for form submission
+router.post("/", (req, res, next) => {
+  const { contractNumberDropDown:contractNumber,panel, descriptionDropdown, height, width, length,notes } = req.body;
+
+  const values = [contractNumber, panel,descriptionDropdown, height, width, length, notes];
+  const query1 = "INSERT INTO tblCount (ContractNumber, Panel,Description, Height, Width, Length,Notes) VALUES (?, ?, ?, ?, ?, ?, ?)";
+  // Promise to execute both queries sequentially
+  new Promise((resolve, reject) => {
+      global.db.run(query1, values, function(err) {
+          if (err) {
+              reject(err);
+          } else {
+              resolve(); // Resolve the promise if the first query is successful
+          }
+      });
+  }).then(() => {
+      res.json({ message: 'Form submitted successfully' }); // Send JSON response if both queries are successful
+  })
+  .catch(err => {
+      next(err); // Forward any errors to the error handler middleware
+  });
+});
 
   module.exports = router;

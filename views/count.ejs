@@ -58,6 +58,9 @@
           <!-- Add additional columns here if needed -->
         </tr>
       </thead>
+      <tbody>
+        <!-- Dynamic rows will be added here -->
+      </tbody>
     </table>
     <form
       id="purchaseForm"
@@ -113,6 +116,10 @@
         <label for="length">Length:</label>
         <input id="length" name="length" required />
       </div>
+      <div class="control">
+        <label for="notes">Notes:</label>
+        <input id="notes" name="notes" required />
+      </div>
 
       <p class="form-actions">
         <button type="reset" class="button button-flat">Reset</button>
@@ -121,7 +128,7 @@
     </form>
     <script>
         
-        function handleSubmit(event) {
+        function handlePopulate() {
         event.preventDefault();
 
         const selectedContractNumber = document.getElementById(
@@ -136,6 +143,7 @@
             return response.json();
           })
           .then((data) => {
+            console.log(data);
             populateTable(data);
           })
           .catch((error) => {
@@ -143,7 +151,7 @@
           });
       }
 
-      // Function to fetch details based on selected description
+      // Function to fetch description details based on selected description
       function fetchDetails() {
         const selectedDescription = document.getElementById(
           "descriptionDropdown"
@@ -157,6 +165,99 @@
           })
           .catch((error) => console.error("Error fetching details:", error));
       }
+
+    function populateTable(purchases) {
+  const tableBody = document.querySelector("#purchaseTable tbody");
+  tableBody.innerHTML = ""; // Clear existing table body
+
+  if (purchases.length === 0) {
+    // Handle case where no purchases are returned
+    const row = document.createElement("tr");
+    const cell = document.createElement("td");
+    cell.colSpan = "13"; // Span across all columns
+    cell.textContent = "No purchases found.";
+    row.appendChild(cell);
+    tableBody.appendChild(row);
+    return;
+  }
+
+  const idDropdown = document.getElementById('contractNumberDropDown');
+  purchases.forEach((purchase) => {
+    console.log(purchase);
+    const row = document.createElement("tr");
+    row.setAttribute("data-id", purchase.ID); // Add data-id attribute for identifying the row
+    const cells = [
+      purchase.ID,
+      purchase.ContractNumber,
+      purchase.Panel,
+      purchase.Description,
+      purchase.Height,
+      purchase.Width,
+      purchase.Length,
+      purchase.Notes,
+    ];
+    const option = document.createElement('option');
+    option.value = purchase.ID;
+    option.textContent = purchase.ID;
+    idDropdown.appendChild(option);
+
+    cells.forEach((cellData, i) => {
+  const cell = document.createElement("td");
+    cell.textContent = cellData;
+  
+  row.appendChild(cell);
+});
+
+    tableBody.appendChild(row);
+  });
+}
+
+function handleSubmit(event) {
+        event.preventDefault(); // Prevent the default form submission behavior
+
+        // Gather form data
+        const formData = new FormData(event.target); // event.target refers to the form element
+        console.log(formData);
+        const contractNumberSelected = document.getElementById(
+          "contractNumberDropDown"
+        ).value;
+        // Convert formData to JSON
+        const jsonData = {};
+        formData.forEach((value, key) => {
+          jsonData[key] = value;
+        });
+
+        // Log the form data for debugging
+        // console.log('Form Data:', jsonData);
+
+        // Send the form data via AJAX
+        fetch("/count", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(jsonData),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            console.log("Form submitted successfully:", data);
+            window.location.reload();
+            // Optionally, perform any additional actions after form submission
+          })
+          .catch((error) => {
+            console.error("Error submitting form:", error);
+          });
+      }
+
+      document
+        .getElementById("contractNumberDropDown")
+        .addEventListener("change", handlePopulate);
+   
 
       // Listen for changes on the dropdown list
       document
