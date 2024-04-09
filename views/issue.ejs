@@ -164,7 +164,7 @@ if(selectedContractNumber=="Stores"){
       console.error("Error fetching purchases:", error);
     });
 }else{
-  fetch(`/delivery/purchases/${selectedContractNumber}`)
+  fetch(`/issue/purchases/${selectedContractNumber}`)
     .then((response) => {
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -300,35 +300,35 @@ function tab()
     });
       }
 
-function fetchQtyInStockForPurchases(purchases) {
-  purchases.forEach((purchase) => {
-    const contractNumber = purchase.ContractNumber;
-    const description = purchase.Description;
-    fetch(`/issue/qtyInStock?contractNumber=${contractNumber}&description=${description}`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        // console.log("Received quantity in stock data:", data);
-        if (Array.isArray(data) && data.length > 0 && data[0].hasOwnProperty("QtyReceived")) {
-          for(let i=0;i<data.length;i++)
-          {
-            updateQtyInStock(data[i].QtyReceived, purchase.ID);
-          }
-          data=[];
+// function fetchQtyInStockForPurchases(purchases) {
+//   purchases.forEach((purchase) => {
+//     const contractNumber = purchase.ContractNumber;
+//     const description = purchase.Description;
+//     fetch(`/issue/qtyInStock?contractNumber=${contractNumber}&description=${description}`)
+//       .then((response) => {
+//         if (!response.ok) {
+//           throw new Error("Network response was not ok");
+//         }
+//         return response.json();
+//       })
+//       .then((data) => {
+//         // console.log("Received quantity in stock data:", data);
+//         if (Array.isArray(data) && data.length > 0 && data[0].hasOwnProperty("QtyReceived")) {
+//           for(let i=0;i<data.length;i++)
+//           {
+//             updateQtyInStock(data[i].QtyReceived, purchase.ID);
+//           }
+//           data=[];
 
-        } else {
-          throw new Error("Quantity in stock data is missing or invalid.");
-        }
-      })
-      .catch((error) => {
-        console.error("NOT IMPORTANT Error fetching quantity in stock:", error);
-      });
-  });
-}
+//         } else {
+//           throw new Error("Quantity in stock data is missing or invalid.");
+//         }
+//       })
+//       .catch((error) => {
+//         console.error("NOT IMPORTANT Error fetching quantity in stock:", error);
+//       });
+//   });
+// }
 
 // function fetchQtyInStockForReturn(purchases) {
 //   purchases.forEach((purchase) => {
