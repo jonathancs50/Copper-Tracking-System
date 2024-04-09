@@ -36,8 +36,8 @@
   >
 
     <div class="control-row">
-      <label for="contractNumberDropDown">Contract Number:</label>
-      <select id="contractNumberDropDown" name="contractNumberDropDown">
+      <label class="labelStyle" for="contractNumberDropDown">Contract Number:</label>
+      <select class="dropdownStyle" id="contractNumberDropDown" name="contractNumberDropDown">
         <option disabled selected>Select a Contract Number</option>
         <% contractNumbers.forEach(contractNumbers => { %>
         <option value="<%= contractNumbers.ContractNumber %>">
@@ -51,6 +51,7 @@
       <button type="submit" class="button">Submit</button>
     </p>
   </form>
+  <div class="height">
     <table id="purchaseTable" style="display: none;">
         <thead>
           <tr>
@@ -68,9 +69,14 @@
         <tbody></tbody>
         <!-- Empty tbody for dynamically populated rows -->
       </table>
+    </div>
+    <section class="section-cta">
+      <div class="container">
+        <div class="cta">
+          <div class="cta-text-box">
       <form
       id="purchaseForm"
-      class="deleteMode"
+      class="cta-form"
       action="/return"
       method="post"
       onsubmit="handleReturn(event)"
@@ -95,24 +101,24 @@
 
       <div class="control-row">
         <label for="panelLbl">Panel:</label>
-        <label id="panelLblInput">Panel:</label>
+        <label id="panelLblInput"></label>
         
       </div>
 
       <div class="control-row">
         <label for="descriptionLbl">Description:</label>
-        <label id="descriptionLblInput">Description:</label>        
+        <label id="descriptionLblInput"></label>        
 
       </div>
 
       <div class="control">
         <label for="heightLbl">Height:</label>
-        <label id="heightLblInput">Height:</label>
+        <label id="heightLblInput"></label>
       </div>
 
       <div class="control">
         <label for="widthLbl">Width:</label>
-        <label id="widthLblInput">Width:</label>
+        <label id="widthLblInput"></label>
 
       </div>
       <div class="control">
@@ -126,10 +132,14 @@
       </div>
 
       <p class="form-actions">
-        <button type="reset" class="button button-flat">Reset</button>
+        <!-- <button type="reset" class="button button-flat">Reset</button> -->
         <button type="submit"  class="button">Submit</button>
       </p>
     </form>
+  </div>
+</div>
+</div>
+</section>
 
     <script src="node_modules\tabulator-tables\dist/js/tabulator.min.js"></script>
     <script>
@@ -308,7 +318,7 @@ function tab()
       layout: "fitColumns",
       width: "100%",
        // Set height to 400px
-    height: 400,
+    height: 250,
     // Enable vertical scrolling
     scrollVertical: true,
     });

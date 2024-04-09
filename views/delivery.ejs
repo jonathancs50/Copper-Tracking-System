@@ -48,8 +48,8 @@
       <p>Enter purchase details</p>
 
       <div class="control-row">
-        <label for="contractNumberDropDown">Contract Number:</label>
-        <select id="contractNumberDropDown" name="contractNumberDropDown">
+        <label class="labelStyle" for="contractNumberDropDown">Contract Number:</label>
+        <select id="contractNumberDropDown" class="dropdownStyle" name="contractNumberDropDown">
           <option disabled selected>Select a Contract Number</option>
           <% contractNumbers.forEach(contractNumbers => { %>
           <option value="<%= contractNumbers.ContractNumber %>">
@@ -57,13 +57,14 @@
           </option>
           <% }); %>
         </select>
-        <button type="button" onclick="refreshPage()">Refresh Page</button>
+        <button type="button" class="button" onclick="refreshPage()">Refresh Page</button>
       </div>
 
       <p class="form-actions">
         <button type="submit" class="button">Submit</button>
       </p>
     </form>
+    <div class="height">
     <table id="purchaseTable" style="display: none;">
       <thead>
         <tr>
@@ -83,7 +84,9 @@
       <tbody></tbody>
       <!-- Empty tbody for dynamically populated rows -->
     </table>
-    <button id="updateDeliveryBtn">Update Delivery</button>
+  </div>
+    
+  <button id="updateDeliveryBtn" class="button">Update Delivery</button>
     <script src="node_modules\tabulator-tables\dist/js/tabulator.min.js"></script>
     <script>
        var table;
@@ -223,7 +226,7 @@
       layout: "fitColumns",
       width: "100%",
        // Set height to 400px
-    height: 400,
+    height: 250,
     // Enable vertical scrolling
     scrollVertical: true,
     });

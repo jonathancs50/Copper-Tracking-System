@@ -84,6 +84,7 @@
 .btn:link,
 .btn:visited {
   display: inline-block;
+  background-color: #ff7e27;
 
   text-decoration: none;
   font-size: 1rem;
@@ -100,9 +101,7 @@
   /* transition: background-color 0.3s; */
   transition: all 0.3s;
 }
-  .section-cta {
-    /* padding: 4.8rem 0 12.8rem; */
-  }
+  
   
   .cta {
     display: grid;
@@ -145,15 +144,20 @@
 
   }
   
-  .cta-form label {
+  .cta-form label{
     display: block;
+    font-size: 1rem;
+    font-weight: 550;
+    margin-bottom: 1.2rem;
+  }
+  .labelStyle{
     font-size: 1rem;
     font-weight: 550;
     margin-bottom: 1.2rem;
   }
   
   .cta-form input,
-  .cta-form select {
+  .cta-form select{
     width: auto;
     padding: 1rem;
     font-size: 1rem;
@@ -161,6 +165,18 @@
     color: inherit;
     border: none;
     background-color: #fdf2e9;
+    border-radius: 9px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+
+  .dropdownStyle {
+    width: auto;
+    padding: 0.7rem 2rem;
+    font-size: 1rem;
+    font-family: inherit;
+    color: inherit;
+    border: none;
+    /* background-color: #aaa; */
     border-radius: 9px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   }
@@ -209,6 +225,13 @@
     background-color: #fff;
     color: #555;
   }
+  button:hover {
+    background-color: #555;
+    color: #fff;
+  }
 
+  .height{
+    height:300px;
+  }
   /* #ff7e27
   #EF680D */
