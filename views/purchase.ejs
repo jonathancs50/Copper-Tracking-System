@@ -3,7 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/main.css">
     <link href="node_modules\tabulator-tables\dist\css/tabulator_modern.min.css" rel="stylesheet">
+
     <title>Purchases</title>
   </head>
   <style>
@@ -13,14 +15,14 @@
     }
   </style>
   <body>
-    <div class="navbar">
-      <ul>
-        <li><a href="/purchase">Purchase</a></li>
-        <li><a href="/delivery">Delivery</a></li>
-        <li><a href="/issue">Issue</a></li>
-        <li><a href="/return">Return</a></li>
-        <li><a href="/count">Count</a></li>
-        <li><a href="/audit">Audit</a></li>
+    <div class="main-nav">
+      <ul class="main-nav-list">
+        <li><a class="main-nav-link" href="/purchase">Purchase</a></li>
+        <li><a class="main-nav-link" href="/delivery">Delivery</a></li>
+        <li><a class="main-nav-link" href="/issue">Issue</a></li>
+        <li><a class="main-nav-link" href="/return">Return</a></li>
+        <li><a class="main-nav-link" href="/count">Count</a></li>
+        <li><a class="main-nav-link" href="/audit">Audit</a></li>
       </ul>
     </div>
     <h1>All Purchases</h1>
@@ -62,15 +64,20 @@
         <% }) %>
       </tbody>
     </table>
+    <section class="section-cta">
+      <div class="container">
+        <div class="cta">
+          <div class="cta-text-box">
+    <h2>Purchase Order</h2>
+    <p class="cta-text">Enter purchase details</p>
     <form
       id="purchaseForm"
-      class="deleteMode"
+      class="cta-form"
       action="/purchase"
       method="post"
       onsubmit="handleSubmit(event)"
     >
-      <h2>Purchase Order</h2>
-      <p>Enter purchase details</p>
+      
 
       <div class="control">
         <label for="contractNumber">Contract Number:</label>
@@ -117,10 +124,13 @@
       </div>
 
       <p class="form-actions">
-        <button type="reset" class="button button-flat">Reset</button>
-        <button type="submit" class="button">Submit</button>
+        <button type="reset" class="button button-flat btn--form">Reset</button>
+        <button type="submit" class="button btn--form">Submit</button>
       </p>
     </form>
+  </div>
+</div>
+</section>
 
     <div>
       <label for="idDropdown">Row ID Selected:</label>
@@ -131,7 +141,7 @@
         <% }); %>
       </select>
 
-      <button id="deleteBtn">Delete</button>
+      <button class="button" id="deleteBtn">Delete</button>
     </div>
 
        <script src="node_modules\tabulator-tables\dist/js/tabulator.min.js"></script>

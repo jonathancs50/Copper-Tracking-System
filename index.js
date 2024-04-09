@@ -30,6 +30,8 @@ app.set("view engine", "ejs");
 
 // Serve static files from the 'public' directory
 app.use('/node_modules', express.static(__dirname + '/node_modules'));
+app.use(express.static('public'));
+
 
 // Database setup
 global.db = new sqlite3.Database("./mainDB.db", function (err) {
