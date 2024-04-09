@@ -123,26 +123,31 @@
         <input id="pricePerLength" name="pricePerLength" required />
       </div>
 
-      <p class="form-actions">
+      <p class="form-actions right">
         <button type="reset" class="button button-flat btn--form">Reset</button>
         <button type="submit" class="button btn--form">Submit</button>
       </p>
     </form>
-  </div>
-</div>
-</section>
-
-    <div>
-      <label for="idDropdown">Row ID Selected:</label>
+    <div class="cta-form">
+      <div class="control">
+        <label for="idDropdown" class="deleteLabel">Row ID Selected:</label>
       <select id="idDropdown" name="idDropdown">
         <option disabled selected>Select a Row to Delete</option>
         <% purchases.forEach(p => { %>
         <option value="<%= p.ID %>"><%= p.ID %></option>
         <% }); %>
       </select>
-
-      <button class="button" id="deleteBtn">Delete</button>
+      </div>
+      
+      
+    <button class="button btn--form control right" id="deleteBtn">Delete</button>
+      
     </div>
+  </div>
+</div>
+</section>
+
+    
 
        <script src="node_modules\tabulator-tables\dist/js/tabulator.min.js"></script>
   <script>
@@ -166,7 +171,7 @@
       layout: "fitColumns",
       width: "100%",
        // Set height to 400px
-    height: 400,
+    height: 250,
     // Enable vertical scrolling
     scrollVertical: true,
     });
