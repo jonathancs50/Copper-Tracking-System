@@ -100,6 +100,7 @@ document.getElementById("issueBtn").addEventListener("click", function() {
   // Iterate over rows and extract data for insertion
   tableData.forEach(row => {
     // Check if the quantity input is not null
+    const id=row.ID;
     const qty = row.Qty;
     const contractNumber = row.ContractNumber;
     const panelNumber = row.Panel;
@@ -114,7 +115,7 @@ document.getElementById("issueBtn").addEventListener("click", function() {
       const length = row.Length; 
 
       // Add data to insertData array
-      insertData.push({ contractNumber, panelNumber, description, height, width, length, qty });
+      insertData.push({ contractNumber, panelNumber, description, height, width, length, qty,id });
       console.log(insertData+"Insert Data"); // Debugging line
     }
   });

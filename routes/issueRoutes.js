@@ -62,16 +62,19 @@ router.get("/purchases/:contractNumber", (req, res, next) => {
     // Prepare the SQL queries
     const query1 = "INSERT INTO tblTransactionHistory (ContractNumber, Panel, Description, Height, Width, Length, Qty, Draw, DateOfTransaction) VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?)";
     const query2 = "UPDATE tblStock SET QtyReceived = QtyReceived - ? WHERE ContractNumber = ? AND Description = ?";
+    const query3 = "UPDATE tblReturns SET QtyReturned = QtyReturned - ? WHERE ID=?";
+
 
     // Array to store any errors that occur during insertion
     const insertionErrors = [];
 
     // Loop through insertData and insert/update records
-    insertData.forEach(({ contractNumber, panelNumber, description, height, width, length, qty }) => {
+    insertData.forEach(({ contractNumber, panelNumber, description, height, width, length, qty, id }) => {
         // Validate the data before insertion
         if (contractNumber && panelNumber && description && height && width && length && qty) {
             const values1 = [contractNumber, panelNumber, description, height, width, length, qty, currentDate];
             const values2 = [qty, contractNumber, description];
+            const values3 = [qty, id];
 
             // Execute the SQL queries
             global.db.run(query1, values1, function(err) {
@@ -87,6 +90,13 @@ router.get("/purchases/:contractNumber", (req, res, next) => {
                     console.error("Error updating QtyReceived in tblStock:", err.message);
                 }
             });
+
+            global.db.run(query3, values3, function(err) {
+              if (err) {
+                  insertionErrors.push(err.message);
+                  console.error("Error updating QtyReturns in tblStock:", err.message);
+              }
+          });
         } else {
             insertionErrors.push("Missing data for insertion");
             console.error("Missing data for insertion");
