@@ -44,6 +44,7 @@ global.db = new sqlite3.Database("./mainDB.db", function (err) {
   }
 });
 
+
 // Use purchaseRoutes for handling routes starting with "/"
 app.use("/", purchaseRoutes);
 app.use("/delivery", deliveryRoutes);

@@ -30,12 +30,7 @@
         <li><a class="main-nav-link" href="/audit">Audit</a></li>
       </ul>
     </div>
-
-    <!-- Your main content -->
-    <div class="content">
-      <!-- Include your main content here -->
-    </div>
-
+    <div id="protectedContent" style="display: none;">
     <!-- Add your JavaScript files here -->
 
     <h1>Audit</h1>
@@ -86,9 +81,39 @@
         <!-- Empty tbody for dynamically populated rows -->
       </tbody>
     </table>
+  </div>
     <script src="node_modules\tabulator-tables\dist/js/tabulator.min.js"></script>
     <script>
       var table;
+
+      function validatePassword() {
+            var enteredPassword = prompt("Please enter the password:");
+            var correctPassword = "1234"; // Replace with your delivery page password
+
+            if (enteredPassword === correctPassword) {
+                // Password correct, show the protected content
+                document.getElementById("protectedContent").style.display = "block";
+                // Store a flag indicating that the user has entered the correct password
+                sessionStorage.setItem("passwordEnteredAudit", "true");
+            } else {
+                // Password incorrect, show an error message
+                alert("Incorrect password!");
+            }
+        }
+
+        // Function to check if the user has already entered the password during the current session
+        function checkPasswordEntered() {
+            if (sessionStorage.getItem("passwordEnteredAudit") === "true") {
+                // User has entered the correct password, show the protected content
+                document.getElementById("protectedContent").style.display = "block";
+            } else {
+                // User has not entered the correct password yet, prompt for password
+                validatePassword();
+            }
+        }
+
+        // Call checkPasswordEntered() when the page is loaded
+        window.onload = checkPasswordEntered;
       function handleSubmit(event) {
         event.preventDefault();
 
