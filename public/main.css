@@ -105,7 +105,7 @@ h2 {
   grid-template-columns: 2fr;
   background-color: #ff7e27;
   box-shadow: 0 2.4rem 4.8rem rgba(0, 0, 0, 0.15);
-  border-radius: 11px;
+  border-radius: 20px;
 
   /* background-image: linear-gradient(to right bottom, #ff7e27, #ff7e27); */
 
@@ -230,6 +230,11 @@ button:hover {
 
 .spanning-div {
   grid-column: 1 / -1; /* This makes it span from the first to the last column */
+}
+
+.top-bot-padding {
+  padding-top: 20px;
+  padding: 20px;
 }
 
 /* #ff7e27
