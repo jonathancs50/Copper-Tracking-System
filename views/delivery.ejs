@@ -3,8 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="node_modules\tabulator-tables\dist\css/tabulator_modern.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/main.css">
+    <link
+      href="node_modules\tabulator-tables\dist\css/tabulator_modern.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/main.css" />
 
     <title>Delivery</title>
     <style>
@@ -14,7 +17,7 @@
       }
     </style>
   </head>
- 
+
   <body>
     <!-- Navigation bar -->
     <div class="main-nav">
@@ -44,11 +47,15 @@
       method="post"
       onsubmit="handleSubmit(event)"
     >
-      
-
       <div class="control-row">
-        <label class="labelStyle" for="contractNumberDropDown">Contract Number:</label>
-        <select id="contractNumberDropDown" class="dropdownStyle" name="contractNumberDropDown">
+        <label class="labelStyle" for="contractNumberDropDown"
+          >Contract Number:</label
+        >
+        <select
+          id="contractNumberDropDown"
+          class="dropdownStyle"
+          name="contractNumberDropDown"
+        >
           <option disabled selected>Select a Contract Number</option>
           <% contractNumbers.forEach(contractNumbers => { %>
           <option value="<%= contractNumbers.ContractNumber %>">
@@ -56,7 +63,9 @@
           </option>
           <% }); %>
         </select>
-        <button type="button" class="button" onclick="refreshPage()">Refresh Page</button>
+        <button type="button" class="button" onclick="refreshPage()">
+          Refresh Page
+        </button>
       </div>
 
       <p class="form-actions">
@@ -64,77 +73,78 @@
       </p>
     </form>
     <div class="height">
-    <table id="purchaseTable" style="display: none;">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Contract Number</th>
-          <th>Description</th>
-          <th>Height</th>
-          <th>Width</th>
-          <th>Length</th>
-          <th>OrderQty</th>
-          <th>Qty Received</th>
-          <th>Date Received</th>
-          <th>Kg Per Length</th>
-          <th>Total Length Ordered</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-      <!-- Empty tbody for dynamically populated rows -->
-    </table>
-  </div>
-    
-  <button id="updateDeliveryBtn" class="button">Update Delivery</button>
+      <table id="purchaseTable" style="display: none">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Contract Number</th>
+            <th>Description</th>
+            <th>Height</th>
+            <th>Width</th>
+            <th>Length</th>
+            <th>OrderQty</th>
+            <th>Qty Received</th>
+            <th>Date Received</th>
+            <th>Kg Per Length</th>
+            <th>Total Length Ordered</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+        <!-- Empty tbody for dynamically populated rows -->
+      </table>
+    </div>
+
+    <button id="updateDeliveryBtn" class="button">Update Delivery</button>
     <script src="node_modules\tabulator-tables\dist/js/tabulator.min.js"></script>
     <script>
-       var table;
-       function refreshPage() {
-    window.location.reload();
-  }
-       document.getElementById("updateDeliveryBtn").addEventListener("click", function() {
-    // Get table data
-    var tableData = table.getData(true); // Use getData(true) to get raw data values
+      var table;
+      function refreshPage() {
+        window.location.reload();
+      }
+      document
+        .getElementById("updateDeliveryBtn")
+        .addEventListener("click", function () {
+          // Get table data
+          var tableData = table.getData(true); // Use getData(true) to get raw data values
 
-    // Array to store data for update
-    const updateData = [];
+          // Array to store data for update
+          const updateData = [];
 
-    // Iterate over table data and extract delivery quantities
-    tableData.forEach(row => {
-        const receivedQty = row.QtyReceived;
-        if (receivedQty !== null && receivedQty !== "") {
-            // Extract other necessary data from the row
-            const id = row.ID;
-            const contractNumber = row.ContractNumber;
-            const description = row.Description;
-            // Add data to updateData array
-            updateData.push({ id, contractNumber, receivedQty, description });
-        }
-    });
+          // Iterate over table data and extract delivery quantities
+          tableData.forEach((row) => {
+            const receivedQty = row.QtyReceived;
+            if (receivedQty !== null && receivedQty !== "") {
+              // Extract other necessary data from the row
+              const id = row.ID;
+              const contractNumber = row.ContractNumber;
+              const description = row.Description;
+              // Add data to updateData array
+              updateData.push({ id, contractNumber, receivedQty, description });
+            }
+          });
 
-    // Send updateData to the server
-    fetch("/delivery/updateDelivery", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ updateData })
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log(data); // Handle response from server if needed
-    })
-    .catch(error => {
-        console.error("Error updating delivery:", error);
-    });
-});
+          // Send updateData to the server
+          fetch("/delivery/updateDelivery", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ updateData }),
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Network response was not ok");
+              }
+              return response.json();
+            })
+            .then((data) => {
+              console.log(data); // Handle response from server if needed
+            })
+            .catch((error) => {
+              console.error("Error updating delivery:", error);
+            });
+        });
 
-  
       function handleSubmit(event) {
         event.preventDefault();
 
@@ -197,40 +207,46 @@
 
           tableBody.appendChild(row);
         });
-        document.getElementById("purchaseTable").style.display="";
+        document.getElementById("purchaseTable").style.display = "";
         tab();
       }
 
-      function tab()
-      {
-         // Initialize Tabulator on the purchaseTable
-    table = new Tabulator("#purchaseTable", {
-      // Define column headers based on thead
-      columns: [
-        { title: "ID", field: "ID", width: 75 },
-        { title: "Contract Number", field: "ContractNumber" ,minWidth: 175 },
-        { title: "Description", field: "Description",width: 125  },
-        { title: "Height", field: "Height" , width: 100},
-        { title: "Width", field: "Width" , width: 100},
-        { title: "Length", field: "Length" , width: 100},
-        { title: "OrderQty", field: "OrderQty" , width: 150},
-        { title: "Qty Received", field: "QtyReceived" ,editor:"input", width: 150},
-        { title: "Date Received", field: "DateReceived" , width: 150},
-        { title: "Kg Per Length", field: "KgPerLength" , width: 150},
-        { title: "Total Length Ordered", field: "TotalLengthOrdered" }
-      ],
+      function tab() {
+        // Initialize Tabulator on the purchaseTable
+        table = new Tabulator("#purchaseTable", {
+          // Define column headers based on thead
+          columns: [
+            { title: "ID", field: "ID", width: 75 },
+            {
+              title: "Contract Number",
+              field: "ContractNumber",
+              minWidth: 175,
+            },
+            { title: "Description", field: "Description", width: 125 },
+            { title: "Height", field: "Height", width: 100 },
+            { title: "Width", field: "Width", width: 100 },
+            { title: "Length", field: "Length", width: 100 },
+            { title: "OrderQty", field: "OrderQty", width: 150 },
+            {
+              title: "Qty Received",
+              field: "QtyReceived",
+              editor: "input",
+              width: 150,
+            },
+            { title: "Date Received", field: "DateReceived", width: 150 },
+            { title: "Kg Per Length", field: "KgPerLength", width: 150 },
+            { title: "Total Length Ordered", field: "TotalLengthOrdered" },
+          ],
 
-
-
-      layout: "fitColumns",
-      width: "100%",
-       // Set height to 400px
-    height: 250,
-    // Enable vertical scrolling
-    scrollVertical: true,
-    movableRows: true,
-    movableColumns: true,
-    });
+          layout: "fitColumns",
+          width: "100%",
+          // Set height to 400px
+          height: 250,
+          // Enable vertical scrolling
+          scrollVertical: true,
+          movableRows: true,
+          movableColumns: true,
+        });
       }
     </script>
   </body>

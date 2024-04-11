@@ -3,8 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="node_modules\tabulator-tables\dist\css/tabulator_modern.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/main.css">
+    <link
+      href="node_modules\tabulator-tables\dist\css/tabulator_modern.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/main.css" />
 
     <title>Audit</title>
     <!-- Add your CSS styles here -->
@@ -44,11 +47,15 @@
       method="post"
       onsubmit="handleSubmit(event)"
     >
-
-
       <div class="control-row">
-        <label for="contractNumberDropDown" class="labelStyle">Contract Number:</label>
-        <select id="contractNumberDropDown" class="dropdownStyle" name="contractNumberDropDown">
+        <label for="contractNumberDropDown" class="labelStyle"
+          >Contract Number:</label
+        >
+        <select
+          id="contractNumberDropDown"
+          class="dropdownStyle"
+          name="contractNumberDropDown"
+        >
           <option disabled selected>Select a Contract Number</option>
           <% contractNumbers.forEach(contractNumbers => { %>
           <option value="<%= contractNumbers.ContractNumber %>">
@@ -62,7 +69,7 @@
         <button type="submit" class="button">Submit</button>
       </p>
     </form>
-    <table id="purchaseTable" style="display: none;">
+    <table id="purchaseTable" style="display: none">
       <thead>
         <tr>
           <th>Contract Number</th>
@@ -76,13 +83,12 @@
         </tr>
       </thead>
       <tbody>
-      <!-- Empty tbody for dynamically populated rows -->
+        <!-- Empty tbody for dynamically populated rows -->
       </tbody>
-
     </table>
     <script src="node_modules\tabulator-tables\dist/js/tabulator.min.js"></script>
     <script>
-       var table; 
+      var table;
       function handleSubmit(event) {
         event.preventDefault();
 
@@ -142,35 +148,46 @@
 
           tableBody.appendChild(row);
         });
-        document.getElementById("purchaseTable").style.display="";
+        document.getElementById("purchaseTable").style.display = "";
         tab();
       }
 
-      function tab()
-      {
-         // Initialize Tabulator on the purchaseTable
-    table = new Tabulator("#purchaseTable", {
-      // Define column headers based on thead
-      columns: [
-        { title: "Contract Number", field: "ContractNumber" ,minWidth: 175,maxWidth:250},
-        { title: "Panel", field: "Panel", width: 150},
-        { title: "Description", field: "Description",width: 125  },
-        { title: "Height", field: "Height" , width: 100},
-        { title: "Width", field: "Width" , width: 100},
-        { title: "Transacted Length", field: "Transaction_Length" , minwidth: 175},
-        { title: "Counted Length", field: "Count_Length"  , minwidth: 175},
-        { title: "Missing Length", field: "Length_Difference"  , minwidth: 175},
-      ],
-      layout: "fitColumns",
-      width: "100%",
-       // Set height to 400px
-    height: 400,
-    // Enable vertical scrolling
-    scrollVertical: true,
-    movableRows: true,
-    movableColumns: true,
-    });
-
+      function tab() {
+        // Initialize Tabulator on the purchaseTable
+        table = new Tabulator("#purchaseTable", {
+          // Define column headers based on thead
+          columns: [
+            {
+              title: "Contract Number",
+              field: "ContractNumber",
+              minWidth: 175,
+              maxWidth: 250,
+            },
+            { title: "Panel", field: "Panel", width: 150 },
+            { title: "Description", field: "Description", width: 125 },
+            { title: "Height", field: "Height", width: 100 },
+            { title: "Width", field: "Width", width: 100 },
+            {
+              title: "Transacted Length",
+              field: "Transaction_Length",
+              minwidth: 175,
+            },
+            { title: "Counted Length", field: "Count_Length", minwidth: 175 },
+            {
+              title: "Missing Length",
+              field: "Length_Difference",
+              minwidth: 175,
+            },
+          ],
+          layout: "fitColumns",
+          width: "100%",
+          // Set height to 400px
+          height: 400,
+          // Enable vertical scrolling
+          scrollVertical: true,
+          movableRows: true,
+          movableColumns: true,
+        });
       }
     </script>
   </body>

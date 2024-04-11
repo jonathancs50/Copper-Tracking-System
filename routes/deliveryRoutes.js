@@ -37,40 +37,39 @@ router.get("/purchases/:contractNumber", (req, res, next) => {
   });
 });
 
-
 router.post("/updateDelivery", (req, res, next) => {
-    const { updateData } = req.body;
-    const currentDate = new Date().toLocaleDateString(); // Get current date
+  const { updateData } = req.body;
+  const currentDate = new Date().toLocaleDateString(); // Get current date
 
-    // Loop through updateData and execute each update query sequentially
-    updateData.forEach(({ id, contractNumber, receivedQty }, index) => {
-        const query1 = "UPDATE tblPurchase SET QtyReceived = ?, DateReceived = ? WHERE ID = ? AND ContractNumber = ?";
-        const query2 = "UPDATE tblStock SET QtyReceived = ?, DateReceived = ? WHERE ID = ? AND ContractNumber = ?";
-        const values1 = [receivedQty, currentDate, id, contractNumber];
+  // Loop through updateData and execute each update query sequentially
+  updateData.forEach(({ id, contractNumber, receivedQty }, index) => {
+    const query1 =
+      "UPDATE tblPurchase SET QtyReceived = ?, DateReceived = ? WHERE ID = ? AND ContractNumber = ?";
+    const query2 =
+      "UPDATE tblStock SET QtyReceived = ?, DateReceived = ? WHERE ID = ? AND ContractNumber = ?";
+    const values1 = [receivedQty, currentDate, id, contractNumber];
 
-        // Execute the first update query
-        global.db.run(query1, values1, function(err) {
-            if (err) {
-                console.error("Error updating delivery:", err);
-                next(err); // Forward error to error handler
-            } else {
-                // Execute the second update query after the first one completes
-                global.db.run(query2, values1, function(err) {
-                    if (err) {
-                        console.error("Error updating delivery:", err);
-                        next(err); // Forward error to error handler
-                    } else {
-                        // If this is the last iteration, send success response
-                        if (index === updateData.length - 1) {
-                            res.json({ message: "Delivery quantities updated successfully" });
-                        }
-                    }
-                });
+    // Execute the first update query
+    global.db.run(query1, values1, function (err) {
+      if (err) {
+        console.error("Error updating delivery:", err);
+        next(err); // Forward error to error handler
+      } else {
+        // Execute the second update query after the first one completes
+        global.db.run(query2, values1, function (err) {
+          if (err) {
+            console.error("Error updating delivery:", err);
+            next(err); // Forward error to error handler
+          } else {
+            // If this is the last iteration, send success response
+            if (index === updateData.length - 1) {
+              res.json({ message: "Delivery quantities updated successfully" });
             }
+          }
         });
+      }
     });
+  });
 });
-
-  
 
 module.exports = router;

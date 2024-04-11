@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="node_modules\tabulator-tables\dist\css/tabulator_modern.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/main.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="node_modules\tabulator-tables\dist\css/tabulator_modern.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/main.css" />
 
     <title>Issue</title>
     <!-- Add your CSS styles here -->
@@ -14,10 +17,9 @@
         color: Black; /* Set text color to white */
       }
     </style>
-</head>
+  </head>
 
-<body>
-
+  <body>
     <!-- Navigation bar -->
     <div class="main-nav">
       <ul class="main-nav-list">
@@ -29,40 +31,46 @@
         <li><a class="main-nav-link" href="/audit">Audit</a></li>
       </ul>
     </div>
-<h1>Issue</h1>
+    <h1>Issue</h1>
     <!-- Your main content -->
     <div class="content">
-        <!-- Include your main content here -->
+      <!-- Include your main content here -->
     </div>
     <form
-    id="purchaseForm"
-    class="deleteMode"
-    action="/purchase"
-    method="post"
-    onsubmit="handleSubmit(event)"
-  >
-    
+      id="purchaseForm"
+      class="deleteMode"
+      action="/purchase"
+      method="post"
+      onsubmit="handleSubmit(event)"
+    >
+      <div class="control-row">
+        <label for="contractNumberDropDown" class="labelStyle"
+          >Contract Number:</label
+        >
+        <select
+          class="dropdownStyle"
+          id="contractNumberDropDown"
+          name="contractNumberDropDown"
+        >
+          <option disabled selected>Select a Contract Number</option>
+          <option value="Stores">Stores</option>
+          <% contractNumbers.forEach(contractNumbers => { %>
+          <option value="<%= contractNumbers.ContractNumber %>">
+            <%= contractNumbers.ContractNumber %>
+          </option>
+          <% }); %>
+        </select>
+        <button type="button" class="button" onclick="refreshPage()">
+          Refresh Page
+        </button>
+      </div>
 
-    <div class="control-row">
-      <label for="contractNumberDropDown" class="labelStyle">Contract Number:</label>
-      <select class="dropdownStyle" id="contractNumberDropDown" name="contractNumberDropDown">
-        <option disabled selected>Select a Contract Number</option>
-        <option value="Stores">Stores</option>
-        <% contractNumbers.forEach(contractNumbers => { %>
-        <option value="<%= contractNumbers.ContractNumber %>">
-          <%= contractNumbers.ContractNumber %>
-        </option>
-        <% }); %>
-      </select>
-      <button type="button" class="button" onclick="refreshPage()">Refresh Page</button>
-    </div>
-
-    <p class="form-actions">
-      <button type="submit" class="button">Submit</button>
-    </p>
-  </form>
-  <div class="height">
-    <table id="purchaseTable" style="display: none;">
+      <p class="form-actions">
+        <button type="submit" class="button">Submit</button>
+      </p>
+    </form>
+    <div class="height">
+      <table id="purchaseTable" style="display: none">
         <thead>
           <tr>
             <th>ID</th>
@@ -82,303 +90,322 @@
         <!-- Empty tbody for dynamically populated rows -->
       </table>
     </div>
-      <button id="issueBtn" class="button">Issue To Panel</button>
-      <script src="node_modules\tabulator-tables\dist/js/tabulator.min.js"></script>
+    <button id="issueBtn" class="button">Issue To Panel</button>
+    <script src="node_modules\tabulator-tables\dist/js/tabulator.min.js"></script>
     <script>
-       var table;
-          let qtyInStock=[];
-document.getElementById("issueBtn").addEventListener("click", function() {
+      var table;
+      let qtyInStock = [];
+      document
+        .getElementById("issueBtn")
+        .addEventListener("click", function () {
+          // Get table data
+          var tableData = table.getData(true); // Use getData(true) to get raw data values
 
+          // Array to store data for insertion
+          const insertData = [];
 
-   // Get table data
-   var tableData = table.getData(true); // Use getData(true) to get raw data values
+          // Iterate over rows and extract data for insertion
+          tableData.forEach((row) => {
+            // Check if the quantity input is not null
+            const id = row.ID;
+            const qty = row.Qty;
+            const contractNumber = row.ContractNumber;
+            const panelNumber = row.Panel;
 
-  // Array to store data for insertion
-  const insertData = [];
+            // console.log("Extracted qty value:", qty); // Debugging line
 
-  // Iterate over rows and extract data for insertion
-  tableData.forEach(row => {
-    // Check if the quantity input is not null
-    const id=row.ID;
-    const qty = row.Qty;
-    const contractNumber = row.ContractNumber;
-    const panelNumber = row.Panel;
+            if (qty !== null && qty !== "" && qty !== "Qty") {
+              // Extract necessary data from the row
+              const description = row.Description;
+              const height = row.Height;
+              const width = row.Width;
+              const length = row.Length;
 
-    // console.log("Extracted qty value:", qty); // Debugging line
+              // Add data to insertData array
+              insertData.push({
+                contractNumber,
+                panelNumber,
+                description,
+                height,
+                width,
+                length,
+                qty,
+                id,
+              });
+              console.log(insertData + "Insert Data"); // Debugging line
+            }
+          });
 
-    if (qty !== null && qty !== "" && qty !== "Qty") {
-      // Extract necessary data from the row
-      const description = row.Description; 
-      const height = row.Height; 
-      const width = row.Width; 
-      const length = row.Length; 
+          // console.log("Data to be inserted:", insertData); // Debugging line
 
-      // Add data to insertData array
-      insertData.push({ contractNumber, panelNumber, description, height, width, length, qty,id });
-      console.log(insertData+"Insert Data"); // Debugging line
-    }
-  });
+          // Send insertData to the server
+          fetch("/issue/insertIssueTransaction", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ insertData }),
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Network response was not ok");
+              }
+              return response.json();
+            })
+            .then((data) => {
+              console.log(data); // Handle response from server if needed
+            })
+            .catch((error) => {
+              console.error("Error inserting data:", error);
+            });
+          window.location.reload();
+        });
 
-  // console.log("Data to be inserted:", insertData); // Debugging line
-
-  // Send insertData to the server
-  fetch("/issue/insertIssueTransaction", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ insertData })
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-    return response.json();
-  })
-  .then(data => {
-    console.log(data); // Handle response from server if needed
-  })
-  .catch(error => {
-    console.error("Error inserting data:", error);
-  });
-  window.location.reload();
-});
-  
-function handleSubmit(event) {
-  event.preventDefault();
-  const selectedContractNumber = document.getElementById("contractNumberDropDown").value;
-console.log(selectedContractNumber);
-if(selectedContractNumber=="Stores"){
-  fetch(`/issue/purchasesStores`)
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
+      function handleSubmit(event) {
+        event.preventDefault();
+        const selectedContractNumber = document.getElementById(
+          "contractNumberDropDown"
+        ).value;
+        console.log(selectedContractNumber);
+        if (selectedContractNumber == "Stores") {
+          fetch(`/issue/purchasesStores`)
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Network response was not ok");
+              }
+              return response.json();
+            })
+            .then((data) => {
+              populateTableStores(data);
+              // console.log(data);
+            })
+            .catch((error) => {
+              console.error("Error fetching purchases:", error);
+            });
+        } else {
+          fetch(`/issue/purchases/${selectedContractNumber}`)
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Network response was not ok");
+              }
+              return response.json();
+            })
+            .then((data) => {
+              populateTable(data);
+              // fetchQtyInStockForPurchases(data);
+              console.log(data);
+            })
+            .catch((error) => {
+              console.error("Error fetching purchases:", error);
+            });
+        }
       }
-      return response.json();
-    })
-    .then((data) => {
-      populateTableStores(data);
-      // console.log(data);
-    })
-    .catch((error) => {
-      console.error("Error fetching purchases:", error);
-    });
-}else{
-  fetch(`/issue/purchases/${selectedContractNumber}`)
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      return response.json();
-    })
-    .then((data) => {
-      populateTable(data);
-      // fetchQtyInStockForPurchases(data);
-      console.log(data);
-    })
-    .catch((error) => {
-      console.error("Error fetching purchases:", error);
-    });
-}
 
-}
+      function populateTable(purchases) {
+        const tableBody = document.querySelector("#purchaseTable tbody");
+        tableBody.innerHTML = ""; // Clear existing table body
 
-function populateTable(purchases) {
-  const tableBody = document.querySelector("#purchaseTable tbody");
-  tableBody.innerHTML = ""; // Clear existing table body
+        if (purchases.length === 0) {
+          // Handle case where no purchases are returned
+          const row = document.createElement("tr");
+          const cell = document.createElement("td");
+          cell.colSpan = "13"; // Span across all columns
+          cell.textContent = "No purchases found.";
+          row.appendChild(cell);
+          tableBody.appendChild(row);
+          return;
+        }
 
-  if (purchases.length === 0) {
-    // Handle case where no purchases are returned
-    const row = document.createElement("tr");
-    const cell = document.createElement("td");
-    cell.colSpan = "13"; // Span across all columns
-    cell.textContent = "No purchases found.";
-    row.appendChild(cell);
-    tableBody.appendChild(row);
-    return;
-  }
+        purchases.forEach((purchase) => {
+          const row = document.createElement("tr");
+          row.setAttribute("data-id", purchase.ID); // Add data-id attribute for identifying the row
+          const cells = [
+            purchase.ID,
+            purchase.ContractNumber,
+            "Panel",
+            purchase.Description,
+            purchase.Height,
+            purchase.Width,
+            purchase.Length,
+            purchase.QtyReceived, // Leave "Qty In Stock" blank for now
+            "Qty",
+            purchase.KgPerLength,
+            purchase.TotalLengthOrdered,
+          ];
 
-  purchases.forEach((purchase) => {
-    const row = document.createElement("tr");
-    row.setAttribute("data-id", purchase.ID); // Add data-id attribute for identifying the row
-    const cells = [
-      purchase.ID,
-      purchase.ContractNumber,
-      "Panel",
-      purchase.Description,
-      purchase.Height,
-      purchase.Width,
-      purchase.Length,
-      purchase.QtyReceived, // Leave "Qty In Stock" blank for now
-      "Qty",
-      purchase.KgPerLength,
-      purchase.TotalLengthOrdered,
-    ];
-
-    cells.forEach((cellData, i) => {
+          cells.forEach((cellData, i) => {
             const cell = document.createElement("td");
 
             cell.textContent = cellData;
             row.appendChild(cell);
           });
 
-    tableBody.appendChild(row);
-  });
-  document.getElementById("purchaseTable").style.display="";
-  tab();
-}
+          tableBody.appendChild(row);
+        });
+        document.getElementById("purchaseTable").style.display = "";
+        tab();
+      }
 
-function populateTableStores(purchases) {
-  const tableBody = document.querySelector("#purchaseTable tbody");
-  tableBody.innerHTML = ""; // Clear existing table body
+      function populateTableStores(purchases) {
+        const tableBody = document.querySelector("#purchaseTable tbody");
+        tableBody.innerHTML = ""; // Clear existing table body
 
-  if (purchases.length === 0) {
-    // Handle case where no purchases are returned
-    const row = document.createElement("tr");
-    const cell = document.createElement("td");
-    cell.colSpan = "13"; // Span across all columns
-    cell.textContent = "No purchases found.";
-    row.appendChild(cell);
-    tableBody.appendChild(row);
-    return;
-  }
+        if (purchases.length === 0) {
+          // Handle case where no purchases are returned
+          const row = document.createElement("tr");
+          const cell = document.createElement("td");
+          cell.colSpan = "13"; // Span across all columns
+          cell.textContent = "No purchases found.";
+          row.appendChild(cell);
+          tableBody.appendChild(row);
+          return;
+        }
 
-  purchases.forEach((purchase) => {
-    const row = document.createElement("tr");
-    row.setAttribute("data-id", purchase.ID); // Add data-id attribute for identifying the row
-    const cells = [
-      purchase.ID,
-      purchase.ContractNumber,
-      "Panel",
-      purchase.Description,
-      purchase.Height,
-      purchase.Width,
-      purchase.Length,
-      purchase.QtyReturned, // Leave "Qty In Stock" blank for now
-      "Qty",
-      purchase.KgPerLength,
-      purchase.TotalLengthOrdered,
-    ];
+        purchases.forEach((purchase) => {
+          const row = document.createElement("tr");
+          row.setAttribute("data-id", purchase.ID); // Add data-id attribute for identifying the row
+          const cells = [
+            purchase.ID,
+            purchase.ContractNumber,
+            "Panel",
+            purchase.Description,
+            purchase.Height,
+            purchase.Width,
+            purchase.Length,
+            purchase.QtyReturned, // Leave "Qty In Stock" blank for now
+            "Qty",
+            purchase.KgPerLength,
+            purchase.TotalLengthOrdered,
+          ];
 
-    cells.forEach((cellData, i) => {
+          cells.forEach((cellData, i) => {
             const cell = document.createElement("td");
 
             cell.textContent = cellData;
             row.appendChild(cell);
           });
 
-    tableBody.appendChild(row);
-  });
-  document.getElementById("purchaseTable").style.display="";
-  tab();
-}
-
-function tab()
-      {
-         // Initialize Tabulator on the purchaseTable
-    table = new Tabulator("#purchaseTable", {
-      // Define column headers based on thead
-      columns: [
-        { title: "ID", field: "ID", width: 75 },
-        { title: "Contract Number", field: "ContractNumber",editor:"input" ,minWidth: 175 },
-        { title: "Panel Number", field: "Panel",editor:"input", width: 150},
-        { title: "Description", field: "Description",width: 125  },
-        { title: "Height", field: "Height" , width: 100},
-        { title: "Width", field: "Width" , width: 100},
-        { title: "Length", field: "Length" , width: 100},
-        { title: "Qty In Stock", field: "OrderQty" , width: 150},
-        { title: "Issue Qty", field: "Qty" ,editor:"input", width: 150},
-        { title: "Kg Per Length", field: "KgPerLength" , width: 150},
-        { title: "Total Length Ordered", field: "TotalLengthOrdered" }
-      ],
-      layout: "fitColumns",
-      width: "100%",
-       // Set height to 400px
-    height: 250,
-    // Enable vertical scrolling
-    scrollVertical: true,
-    movableRows: true,
-    movableColumns: true,
-    });
+          tableBody.appendChild(row);
+        });
+        document.getElementById("purchaseTable").style.display = "";
+        tab();
       }
 
-// function fetchQtyInStockForPurchases(purchases) {
-//   purchases.forEach((purchase) => {
-//     const contractNumber = purchase.ContractNumber;
-//     const description = purchase.Description;
-//     fetch(`/issue/qtyInStock?contractNumber=${contractNumber}&description=${description}`)
-//       .then((response) => {
-//         if (!response.ok) {
-//           throw new Error("Network response was not ok");
-//         }
-//         return response.json();
-//       })
-//       .then((data) => {
-//         // console.log("Received quantity in stock data:", data);
-//         if (Array.isArray(data) && data.length > 0 && data[0].hasOwnProperty("QtyReceived")) {
-//           for(let i=0;i<data.length;i++)
-//           {
-//             updateQtyInStock(data[i].QtyReceived, purchase.ID);
-//           }
-//           data=[];
+      function tab() {
+        // Initialize Tabulator on the purchaseTable
+        table = new Tabulator("#purchaseTable", {
+          // Define column headers based on thead
+          columns: [
+            { title: "ID", field: "ID", width: 75 },
+            {
+              title: "Contract Number",
+              field: "ContractNumber",
+              editor: "input",
+              minWidth: 175,
+            },
+            {
+              title: "Panel Number",
+              field: "Panel",
+              editor: "input",
+              width: 150,
+            },
+            { title: "Description", field: "Description", width: 125 },
+            { title: "Height", field: "Height", width: 100 },
+            { title: "Width", field: "Width", width: 100 },
+            { title: "Length", field: "Length", width: 100 },
+            { title: "Qty In Stock", field: "OrderQty", width: 150 },
+            { title: "Issue Qty", field: "Qty", editor: "input", width: 150 },
+            { title: "Kg Per Length", field: "KgPerLength", width: 150 },
+            { title: "Total Length Ordered", field: "TotalLengthOrdered" },
+          ],
+          layout: "fitColumns",
+          width: "100%",
+          // Set height to 400px
+          height: 250,
+          // Enable vertical scrolling
+          scrollVertical: true,
+          movableRows: true,
+          movableColumns: true,
+        });
+      }
 
-//         } else {
-//           throw new Error("Quantity in stock data is missing or invalid.");
-//         }
-//       })
-//       .catch((error) => {
-//         console.error("NOT IMPORTANT Error fetching quantity in stock:", error);
-//       });
-//   });
-// }
+      // function fetchQtyInStockForPurchases(purchases) {
+      //   purchases.forEach((purchase) => {
+      //     const contractNumber = purchase.ContractNumber;
+      //     const description = purchase.Description;
+      //     fetch(`/issue/qtyInStock?contractNumber=${contractNumber}&description=${description}`)
+      //       .then((response) => {
+      //         if (!response.ok) {
+      //           throw new Error("Network response was not ok");
+      //         }
+      //         return response.json();
+      //       })
+      //       .then((data) => {
+      //         // console.log("Received quantity in stock data:", data);
+      //         if (Array.isArray(data) && data.length > 0 && data[0].hasOwnProperty("QtyReceived")) {
+      //           for(let i=0;i<data.length;i++)
+      //           {
+      //             updateQtyInStock(data[i].QtyReceived, purchase.ID);
+      //           }
+      //           data=[];
 
-// function fetchQtyInStockForReturn(purchases) {
-//   purchases.forEach((purchase) => {
-//     const contractNumber = purchase.ContractNumber;
-//     const description = purchase.Description;
-//     fetch(`/issue/returnQty`)
-//       .then((response) => {
-//         if (!response.ok) {
-//           throw new Error("Network response was not ok");
-//         }
-//         return response.json();
-//       })
-//       .then((data) => {
-//         // console.log("Received quantity in stock data:", data);
-//         if (Array.isArray(data) && data.length > 0 && data[0].hasOwnProperty("QtyReturned")) {
-//           for(let i=0;i<data.length;i++)
-//           {
-//             updateQtyInStock(data[i].QtyReturned, purchase.ID);
-//             console.log(data[i].QtyReturned);
-//           }
+      //         } else {
+      //           throw new Error("Quantity in stock data is missing or invalid.");
+      //         }
+      //       })
+      //       .catch((error) => {
+      //         console.error("NOT IMPORTANT Error fetching quantity in stock:", error);
+      //       });
+      //   });
+      // }
 
-//         } else {
-//           throw new Error("Quantity in stock data is missing or invalid.");
-//         }
-//       })
-//       .catch((error) => {
-//         console.error("NOT IMPORTANT Error fetching quantity in stock:", error);
-//       });
-//   });
-// }
+      // function fetchQtyInStockForReturn(purchases) {
+      //   purchases.forEach((purchase) => {
+      //     const contractNumber = purchase.ContractNumber;
+      //     const description = purchase.Description;
+      //     fetch(`/issue/returnQty`)
+      //       .then((response) => {
+      //         if (!response.ok) {
+      //           throw new Error("Network response was not ok");
+      //         }
+      //         return response.json();
+      //       })
+      //       .then((data) => {
+      //         // console.log("Received quantity in stock data:", data);
+      //         if (Array.isArray(data) && data.length > 0 && data[0].hasOwnProperty("QtyReturned")) {
+      //           for(let i=0;i<data.length;i++)
+      //           {
+      //             updateQtyInStock(data[i].QtyReturned, purchase.ID);
+      //             console.log(data[i].QtyReturned);
+      //           }
 
-function updateQtyInStock(qtyInStockData, purchaseId) {
-  console.log(qtyInStockData+"data");
-  // Extract the quantity from the data received from the server
-  qtyInStock.push(qtyInStockData);
-  for(let i = 1; i<qtyInStock.length+1;i++){
+      //         } else {
+      //           throw new Error("Quantity in stock data is missing or invalid.");
+      //         }
+      //       })
+      //       .catch((error) => {
+      //         console.error("NOT IMPORTANT Error fetching quantity in stock:", error);
+      //       });
+      //   });
+      // }
 
-    const cell8 = document.querySelector(`#purchaseTable tbody tr:nth-child(${i}) td:nth-child(8)`);
+      function updateQtyInStock(qtyInStockData, purchaseId) {
+        console.log(qtyInStockData + "data");
+        // Extract the quantity from the data received from the server
+        qtyInStock.push(qtyInStockData);
+        for (let i = 1; i < qtyInStock.length + 1; i++) {
+          const cell8 = document.querySelector(
+            `#purchaseTable tbody tr:nth-child(${i}) td:nth-child(8)`
+          );
 
-// Update the content of the cell with the quantity in stock
-cell8.textContent = qtyInStock[i-1];
-  }
-
-}
-function refreshPage() {
-    window.location.reload();
-  }
-      </script>
+          // Update the content of the cell with the quantity in stock
+          cell8.textContent = qtyInStock[i - 1];
+        }
+      }
+      function refreshPage() {
+        window.location.reload();
+      }
+    </script>
     <!-- Add your JavaScript files here -->
-</body>
+  </body>
 </html>
