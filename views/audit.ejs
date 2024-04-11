@@ -47,8 +47,8 @@
 
 
       <div class="control-row">
-        <label for="contractNumberDropDown">Contract Number:</label>
-        <select id="contractNumberDropDown" name="contractNumberDropDown">
+        <label for="contractNumberDropDown" class="labelStyle">Contract Number:</label>
+        <select id="contractNumberDropDown" class="dropdownStyle" name="contractNumberDropDown">
           <option disabled selected>Select a Contract Number</option>
           <% contractNumbers.forEach(contractNumbers => { %>
           <option value="<%= contractNumbers.ContractNumber %>">

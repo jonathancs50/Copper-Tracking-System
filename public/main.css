@@ -233,5 +233,12 @@
   .height{
     height:300px;
   }
+
+  .spanning-div {
+    grid-column: 1 / -1; /* This makes it span from the first to the last column */
+  }
+
+ 
+  
   /* #ff7e27
   #EF680D */

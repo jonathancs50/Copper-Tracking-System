@@ -45,9 +45,13 @@
         <!-- Dynamic rows will be added here -->
       </tbody>
     </table>
+    <section class="section-cta">
+      <div class="container">
+        <div class="cta">
+          <div class="cta-text-box">
     <form
       id="purchaseForm"
-      class="deleteMode"
+      class="cta-form"
       action="/purchase"
       method="post"
       onsubmit="handleSubmit(event)"
@@ -98,16 +102,22 @@
         <label for="length">Length:</label>
         <input id="length" name="length" required />
       </div>
-      <div class="control">
+      <div class="control spanning-div ">
         <label for="notes">Notes:</label>
         <input id="notes" name="notes" required />
       </div>
+    
 
-      <p class="form-actions">
-        <button type="reset" class="button button-flat">Reset</button>
-        <button type="submit" class="button">Submit</button>
+ 
+      <p class="form-actions right spanning-div">
+        <button type="reset" class="button btn--form">Reset</button>
+        <button type="submit" class="button btn--form">Submit</button>
       </p>
     </form>
+  </div>
+</div>
+</div>
+</section>
     <script src="node_modules\tabulator-tables\dist/js/tabulator.min.js"></script>
     <script>
        var table;
