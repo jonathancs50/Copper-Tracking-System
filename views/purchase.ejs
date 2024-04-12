@@ -207,6 +207,9 @@ function validatePassword() {
     scrollVertical: true,
     movableRows: true,
     movableColumns: true,
+    initialSort:[ // Define initial sort
+        {column:"ContractNumber", dir:"desc"}
+    ],
     });
 
       function handleSubmit(event) {

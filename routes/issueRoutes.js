@@ -24,6 +24,8 @@ router.get("/purchases/:contractNumber", (req, res, next) => {
   const contractNumber = req.params.contractNumber;
   const purchaseQuery = "SELECT * FROM tblStock WHERE ContractNumber = ?";
 
+  // "SELECT s.ID, s.ContractNumber, s.Description, s.Height, s.Width, s.Length, s.OrderQty - COALESCE(th.TotalDrawnQty, 0) AS RemainingQty, s.QtyReceived, s.DateReceived, s.KgPerLength, s.PricePerLength, s.PricePerKg, s.TotalLengthOrdered FROM tblStock s LEFT JOIN (SELECT ContractNumber,Description,SUM(Qty) AS TotalDrawnQty FROM tblTransactionHistory WHERE Draw = 1 GROUP BY ContractNumber, Description) AS th ON s.ContractNumber = th.ContractNumber AND s.Description = th.Description WHERE s.ID = '19';"
+
   // Fetch purchases for the specified contract number
   global.db.all(purchaseQuery, [contractNumber], (err, purchases) => {
     if (err) {
@@ -49,6 +51,24 @@ router.get("/purchasesStores", (req, res, next) => {
 
     // Send the fetched purchases as JSON response
 
+    res.json(purchases);
+  });
+});
+
+router.get("/correctedQty/:id", (req, res, next) => {
+  const id = req.params.id;
+  const purchaseQuery = "SELECT s.ID,s.ContractNumber,s.Description,s.Height,s.Width,s.Length,COALESCE(s.OrderQty - COALESCE(th.TotalDrawnQty, s.QtyReceived), s.QtyReceived) AS RemainingQty,s.QtyReceived,s.DateReceived,s.KgPerLength,s.PricePerLength,s.PricePerKg,s.TotalLengthOrdered FROM tblStock s LEFT JOIN (SELECT ContractNumber,Description,SUM(Qty) AS TotalDrawnQty FROM     tblTransactionHistory WHERE Draw = 1 GROUP BY ContractNumber, Description) AS th ON s.ContractNumber = th.ContractNumber AND s.Description = th.Description WHERE s.ID = ?;";
+
+// "SELECT s.ID,s.ContractNumber,s.Description,s.Height,s.Width,s.Length,COALESCE(s.OrderQty - COALESCE(th.TotalDrawnQty, s.QtyReceived), s.QtyReceived) AS RemainingQty,s.QtyReceived,s.DateReceived,s.KgPerLength,s.PricePerLength,s.PricePerKg,s.TotalLengthOrdered FROM tblStock s LEFT JOIN (SELECT ContractNumber,Description,SUM(Qty) AS TotalDrawnQty FROM     tblTransactionHistory WHERE Draw = 1 GROUP BY ContractNumber, Description) AS th ON s.ContractNumber = th.ContractNumber AND s.Description = th.Description WHERE s.ID = '31';"
+
+  // Fetch purchases for the specified contract number
+  global.db.all(purchaseQuery, [id], (err, purchases) => {
+    if (err) {
+      next(err);
+      return;
+    }
+
+    // Send the fetched purchases as JSON response
     res.json(purchases);
   });
 });

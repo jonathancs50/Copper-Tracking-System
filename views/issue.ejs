@@ -163,9 +163,11 @@
 
       function handleSubmit(event) {
         event.preventDefault();
+        
         const selectedContractNumber = document.getElementById(
           "contractNumberDropDown"
         ).value;
+        // const 
         console.log(selectedContractNumber);
         if (selectedContractNumber == "Stores") {
           fetch(`/issue/purchasesStores`)
@@ -191,17 +193,52 @@
               return response.json();
             })
             .then((data) => {
-              populateTable(data);
-              // fetchQtyInStockForPurchases(data);
-              console.log(data);
-            })
+                fetchCorrectedQty(data)
+                  .then((newData) => {
+                    // console.log(newData);
+                     populateTable(newData);
+              })
+            .catch((error) => {
+            console.error("Error fetching corrected data:", error);
+        });
+})
             .catch((error) => {
               console.error("Error fetching purchases:", error);
             });
         }
       }
 
+      function fetchCorrectedQty(data) {
+    console.log("Data to fetch corrected quantities:", data);
+    
+    const promises = data.map(item => {
+        const id = item.ID;
+        console.log(`Fetching corrected quantity for ID ${id}`);
+        return fetch(`/issue/correctedQty/${id}`)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`Network response was not ok for ID ${id}`);
+                }
+                return response.json();
+            })
+            .then((correctedQty) => {
+                console.log(`Corrected quantity for ID ${id}:`, correctedQty);
+                item.correctedQty = correctedQty;
+                return item;
+            })
+            .catch((error) => {
+                console.error(`Error fetching corrected quantity for ID ${id}:`, error);
+                item.correctedQty = null;
+                return item;
+            });
+    });
+
+    return Promise.all(promises);
+}
       function populateTable(purchases) {
+        for(let i =0;i<purchases.length;i++){
+        console.log(purchases[i].correctedQty);
+        }
         const tableBody = document.querySelector("#purchaseTable tbody");
         tableBody.innerHTML = ""; // Clear existing table body
 
@@ -227,7 +264,7 @@
             purchase.Height,
             purchase.Width,
             purchase.Length,
-            purchase.QtyReceived, // Leave "Qty In Stock" blank for now
+            purchase.correctedQty[0].RemainingQty, // Leave "Qty In Stock" blank for now
             "Qty",
             purchase.KgPerLength,
             purchase.TotalLengthOrdered,
