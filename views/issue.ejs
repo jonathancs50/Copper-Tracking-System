@@ -107,6 +107,10 @@
           // Iterate over rows and extract data for insertion
           tableData.forEach((row) => {
             // Check if the quantity input is not null
+            // Assuming you have a reference to the dropdown element
+const contractNumberDropDown = document.getElementById("contractNumberDropDown");
+// Get the selected value of the dropdown
+const selectedContractNumber = contractNumberDropDown.value;
             const id = row.ID;
             const qty = row.Qty;
             const contractNumber = row.ContractNumber;
@@ -123,6 +127,7 @@
 
               // Add data to insertData array
               insertData.push({
+                selectedContractNumber,
                 contractNumber,
                 panelNumber,
                 description,

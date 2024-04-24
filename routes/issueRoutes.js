@@ -97,6 +97,7 @@ router.post("/insertIssueTransaction", (req, res, next) => {
   // Loop through insertData and insert/update records
   insertData.forEach(
     ({
+      selectedContractNumber,
       contractNumber,
       panelNumber,
       description,
@@ -108,6 +109,7 @@ router.post("/insertIssueTransaction", (req, res, next) => {
     }) => {
       // Validate the data before insertion
       if (
+        selectedContractNumber&&
         contractNumber &&
         panelNumber &&
         description &&
@@ -150,15 +152,17 @@ router.post("/insertIssueTransaction", (req, res, next) => {
           }
         });
 
-        global.db.run(query3, values3, function (err) {
-          if (err) {
-            insertionErrors.push(err.message);
-            console.error(
-              "Error updating QtyReturns in tblStock:",
-              err.message
-            );
-          }
-        });
+        if (selectedContractNumber === "Stores") {
+          global.db.run(query3, values3, function (err) {
+            if (err) {
+              insertionErrors.push(err.message);
+              console.error(
+                "Error updating QtyReturns in tblReturns:",
+                err.message
+              );
+            }
+          });
+        }
       } else {
         insertionErrors.push("Missing data for insertion");
         console.error("Missing data for insertion");
