@@ -75,6 +75,8 @@
           <th>Transacted Length</th>
           <th>Counted Length</th>
           <th>Missing Length</th>
+          <th>Rand Spent</th>
+          <th>Rand Missing</th>
         </tr>
       </thead>
       <tbody>
@@ -137,6 +139,7 @@
       }
 
       function populateTable(purchases) {
+        let temp=20;
         const tableBody = document.querySelector("#purchaseTable tbody");
         tableBody.innerHTML = ""; // Clear existing table body
 
@@ -153,6 +156,9 @@
 
         purchases.forEach((purchase) => {
           const row = document.createElement("tr");
+          const pricePerMm=purchase.PricePerMeter/1000;
+          const totalSpent=pricePerMm*purchase.Transaction_Length;
+          const randMissing=pricePerMm*purchase.Length_Difference;
           const cells = [
             purchase.ContractNumber,
             purchase.Panel,
@@ -162,6 +168,8 @@
             purchase.Transaction_Length,
             purchase.Count_Length,
             purchase.Length_Difference,
+            totalSpent,
+            randMissing,
           ];
 
           cells.forEach((cellData, i) => {
@@ -203,6 +211,8 @@
               field: "Length_Difference",
               minwidth: 175,
             },
+            { title: "Rand Spent", field: "totalSpent", width: 150 },
+            { title: "Rand Missing", field: "randMissing", width: 150 },
           ],
           layout: "fitColumns",
           width: "100%",
