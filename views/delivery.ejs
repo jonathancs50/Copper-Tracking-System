@@ -28,6 +28,7 @@
         <li><a class="main-nav-link" href="/return">Return</a></li>
         <li><a class="main-nav-link" href="/count">Count</a></li>
         <li><a class="main-nav-link" href="/audit">Audit</a></li>
+        <button id="print-table">Print Table</button>
       </ul>
     </div>
 
@@ -98,6 +99,9 @@
     <script src="node_modules\tabulator-tables\dist/js/tabulator.min.js"></script>
     <script>
       var table;
+      document.getElementById("print-table").addEventListener("click", function(){
+   table.print(false, true);
+});
       function refreshPage() {
         window.location.reload();
       }
@@ -214,6 +218,9 @@
       function tab() {
         // Initialize Tabulator on the purchaseTable
         table = new Tabulator("#purchaseTable", {
+          printAsHtml:true,
+          printRowRange:"all",
+    printHeader:"<h1>Copper Delivery<h1>",
           // Define column headers based on thead
           columns: [
             { title: "ID", field: "ID", width: 75 },

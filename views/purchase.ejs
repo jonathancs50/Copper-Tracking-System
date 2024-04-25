@@ -23,6 +23,7 @@
         <li><a class="main-nav-link" href="/return">Return</a></li>
         <li><a class="main-nav-link" href="/count">Count</a></li>
         <li><a class="main-nav-link" href="/audit">Audit</a></li>
+        <button id="print-table">Print Table</button>
       </ul>
     </div>
     <div id="protectedContent" style="display: none;">
@@ -153,7 +154,9 @@
 
        <script src="node_modules\tabulator-tables\dist/js/tabulator.min.js"></script>
   <script>
-
+ document.getElementById("print-table").addEventListener("click", function(){
+   table.print(false, true);
+});
 function validatePassword() {
             var enteredPassword = prompt("Please enter the password:");
             var correctPassword = "LVP98"; // Replace with your actual password
@@ -184,6 +187,9 @@ function validatePassword() {
         window.onload = checkPasswordEntered;
     // Initialize Tabulator on the purchaseTable
     var table = new Tabulator("#purchaseTable", {
+      printAsHtml:true,
+      printRowRange:"all",
+    printHeader:"<h1>Copper Purchases<h1>",
       // Define column headers based on thead
       columns: [
         { title: "ID", field: "ID", width: 75 },

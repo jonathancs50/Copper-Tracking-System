@@ -27,6 +27,7 @@
         <li><a class="main-nav-link" href="/return">Return</a></li>
         <li><a class="main-nav-link" href="/count">Count</a></li>
         <li><a class="main-nav-link" href="/audit">Audit</a></li>
+        <button id="print-table">Print Table</button>
       </ul>
     </div>
     <h1>Copper Count</h1>
@@ -121,7 +122,9 @@
     <script src="node_modules\tabulator-tables\dist/js/tabulator.min.js"></script>
     <script>
       var table;
-
+      document.getElementById("print-table").addEventListener("click", function(){
+   table.print(false, true);
+});
       function handlePopulate() {
         event.preventDefault();
 
@@ -211,6 +214,9 @@
       function tab() {
         // Initialize Tabulator on the purchaseTable
         table = new Tabulator("#purchaseTable", {
+          printAsHtml:true,
+          printRowRange:"all",
+    printHeader:"<h1>Copper Count<h1>",
           // Define column headers based on thead
           columns: [
             { title: "ID", field: "ID", width: 75 },

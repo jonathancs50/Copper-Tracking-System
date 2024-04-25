@@ -239,3 +239,13 @@ button:hover {
 
 /* #ff7e27
   #EF680D */
+  .tabulator-print-header, tabulator-print-footer{
+    text-align:center;
+}
+
+#print-table{
+  background: none;
+  border: none;
+  font-weight: 500;
+  font-size: 1.3rem;
+}
