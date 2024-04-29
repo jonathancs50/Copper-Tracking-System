@@ -85,7 +85,7 @@ router.post("/insertIssueTransaction", (req, res, next) => {
 
   // Prepare the SQL queries
   const query1 =
-    "INSERT INTO tblTransactionHistory (ContractNumber, Panel, Description, Height, Width, Length, Qty, Draw, DateOfTransaction) VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?)";
+    "INSERT INTO tblTransactionHistory (ContractNumber, Panel, Description, Height, Width, Length, Qty, Draw, DateOfTransaction,DrawnFrom) VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?,?)";
   const query2 =
     "UPDATE tblStock SET QtyReceived = QtyReceived - ? WHERE ContractNumber = ? AND Description = ?";
   const query3 =
@@ -127,6 +127,7 @@ router.post("/insertIssueTransaction", (req, res, next) => {
           length,
           qty,
           currentDate,
+          selectedContractNumber,
         ];
         const values2 = [qty, contractNumber, description];
         const values3 = [qty, id];
