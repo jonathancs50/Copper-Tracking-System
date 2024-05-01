@@ -57,7 +57,11 @@ router.get("/purchasesStores", (req, res, next) => {
 
 router.get("/correctedQty/:id", (req, res, next) => {
   const id = req.params.id;
-  const purchaseQuery = "SELECT s.ID, s.ContractNumber, s.Description, s.Height, s.Width, s.Length, s.OrderQty, p.QtyReceived, s.DateReceived, s.KgPerLength, s.PricePerLength, s.PricePerKg, s.TotalLengthOrdered, (p.QtyReceived - COALESCE((SELECT SUM(th.Qty) FROM tblTransactionHistory th WHERE th.ContractNumber = s.ContractNumber AND th.Length = s.Length AND th.Description = s.Description AND th.Draw = 1), 0)) AS RemainingQty FROM tblStock s JOIN tblPurchase p ON s.ID = p.ID WHERE s.ID = ?;";
+  const purchaseQuery = "SELECT s.ID, s.ContractNumber, s.Description, s.Height, s.Width, s.Length, s.OrderQty, p.QtyReceived, s.DateReceived, s.KgPerLength, s.PricePerLength, s.PricePerKg, s.TotalLengthOrdered, (p.QtyReceived - COALESCE((SELECT SUM(th.Qty) FROM tblTransactionHistory th WHERE th.ContractNumber = s.ContractNumber AND th.Length = s.Length AND th.Description = s.Description AND th.Draw = 1 AND th.DrawnFrom<>'Stores'), 0)) AS RemainingQty FROM tblStock s JOIN tblPurchase p ON s.ID = p.ID WHERE s.ID = ?;";
+
+  
+
+  //SELECT s.ID, s.ContractNumber, s.Description, s.Height, s.Width, s.Length, s.OrderQty, p.QtyReceived, s.DateReceived, s.KgPerLength, s.PricePerLength, s.PricePerKg, s.TotalLengthOrdered, (p.QtyReceived - COALESCE((SELECT SUM(th.Qty) FROM tblTransactionHistory th WHERE th.ContractNumber = s.ContractNumber AND th.Length = s.Length AND th.Description = s.Description AND th.Draw = 1), 0)) AS RemainingQty FROM tblStock s JOIN tblPurchase p ON s.ID = p.ID WHERE s.ID = ?;
 
 // "SELECT s.ID,s.ContractNumber,s.Description,s.Height,s.Width,s.Length,COALESCE(s.OrderQty - COALESCE(th.TotalDrawnQty, s.QtyReceived), s.QtyReceived) AS RemainingQty,s.QtyReceived,s.DateReceived,s.KgPerLength,s.PricePerLength,s.PricePerKg,s.TotalLengthOrdered FROM tblStock s LEFT JOIN (SELECT ContractNumber,Description,SUM(Qty) AS TotalDrawnQty FROM     tblTransactionHistory WHERE Draw = 1 GROUP BY ContractNumber, Description) AS th ON s.ContractNumber = th.ContractNumber AND s.Description = th.Description WHERE s.ID = '31';"
 
