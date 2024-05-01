@@ -40,7 +40,7 @@ router.get("/purchases/:contractNumber", (req, res, next) => {
 });
 
 router.get("/purchasesStores", (req, res, next) => {
-  const purchaseQuery = "SELECT * FROM tblReturns;";
+  const purchaseQuery = "SELECT * FROM tblReturns WHERE QtyReturned > 0;";
 
   // Fetch purchases for the specified contract number
   global.db.all(purchaseQuery, (err, purchases) => {
