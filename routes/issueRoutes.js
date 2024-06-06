@@ -40,7 +40,39 @@ router.get("/purchases/:contractNumber", (req, res, next) => {
 });
 
 router.get("/purchasesStores", (req, res, next) => {
-  const purchaseQuery = "SELECT * FROM tblReturns WHERE QtyReturned > 0;";
+  const purchaseQuery = "SELECT * FROM tblReturns WHERE QtyReturned > 0 AND ContractNumber = 'Stores';";
+
+  // Fetch purchases for the specified contract number
+  global.db.all(purchaseQuery, (err, purchases) => {
+    if (err) {
+      next(err);
+      return;
+    }
+
+    // Send the fetched purchases as JSON response
+
+    res.json(purchases);
+  });
+});
+
+router.get("/purchasesOffcuts", (req, res, next) => {
+  const purchaseQuery = "SELECT * FROM tblReturns WHERE QtyReturned > 0 AND ContractNumber = 'Offcuts';";
+
+  // Fetch purchases for the specified contract number
+  global.db.all(purchaseQuery, (err, purchases) => {
+    if (err) {
+      next(err);
+      return;
+    }
+
+    // Send the fetched purchases as JSON response
+
+    res.json(purchases);
+  });
+});
+
+router.get("/purchasesUsed", (req, res, next) => {
+  const purchaseQuery = "SELECT * FROM tblReturns WHERE QtyReturned > 0 AND ContractNumber = 'Used';";
 
   // Fetch purchases for the specified contract number
   global.db.all(purchaseQuery, (err, purchases) => {
@@ -57,9 +89,11 @@ router.get("/purchasesStores", (req, res, next) => {
 
 router.get("/correctedQty/:id", (req, res, next) => {
   const id = req.params.id;
-  const purchaseQuery = "SELECT s.ID, s.ContractNumber, s.Description, s.Height, s.Width, s.Length, s.OrderQty, p.QtyReceived, s.DateReceived, s.KgPerLength, s.PricePerLength, s.PricePerKg, s.TotalLengthOrdered, (p.QtyReceived - COALESCE((SELECT SUM(th.Qty) FROM tblTransactionHistory th WHERE th.ContractNumber = s.ContractNumber AND th.Length = s.Length AND th.Description = s.Description AND th.Draw = 1 AND th.DrawnFrom<>'Stores'), 0)) AS RemainingQty FROM tblStock s JOIN tblPurchase p ON s.ID = p.ID WHERE s.ID = ?;";
+  const purchaseQuery = "SELECT s.ID, s.ContractNumber, s.Description, s.Height, s.Width, s.Length, (SELECT COALESCE(SUM(p.QtyReceived), 0) FROM tblPurchase p WHERE p.ContractNumber = s.ContractNumber AND p.Description = s.Description AND p.Length = s.Length) AS TotalQtyReceived, (SELECT COALESCE(SUM(th.Qty), 0) FROM tblTransactionHistory th WHERE th.ContractNumber = s.ContractNumber AND th.Description = s.Description AND th.Length = s.Length AND th.Draw = 1 AND th.DrawnFrom <> 'Stores') AS TotalTransactions, COALESCE((SELECT SUM(p.QtyReceived) FROM tblPurchase p WHERE p.ContractNumber = s.ContractNumber AND p.Description = s.Description AND p.Length = s.Length), 0) - COALESCE((SELECT SUM(th.Qty) FROM tblTransactionHistory th WHERE th.ContractNumber = s.ContractNumber AND th.Description = s.Description AND th.Length = s.Length AND th.Draw = 1 AND th.DrawnFrom <> 'Stores'), 0) AS RemainingQty, (SELECT COALESCE(SUM(p.QtyReceived), 0) FROM tblPurchase p WHERE p.ContractNumber = s.ContractNumber AND p.Description = s.Description AND p.Length = s.Length) * s.Length AS TotalLengthOrdered FROM tblStock s WHERE s.ID = ?;";
 
-  
+
+
+// "SELECT s.ID, s.ContractNumber, s.Description, s.Height, s.Width, s.Length, s.OrderQty, p.QtyReceived, s.DateReceived, s.KgPerLength, s.PricePerLength, s.PricePerKg, s.TotalLengthOrdered, (p.QtyReceived - COALESCE((SELECT SUM(th.Qty) FROM tblTransactionHistory th WHERE th.ContractNumber = s.ContractNumber AND th.Length = s.Length AND th.Description = s.Description AND th.Draw = 1 AND th.DrawnFrom<>'Stores'), 0)) AS RemainingQty FROM tblStock s JOIN tblPurchase p ON s.ID = p.ID WHERE s.ID = ?;"
 
   //SELECT s.ID, s.ContractNumber, s.Description, s.Height, s.Width, s.Length, s.OrderQty, p.QtyReceived, s.DateReceived, s.KgPerLength, s.PricePerLength, s.PricePerKg, s.TotalLengthOrdered, (p.QtyReceived - COALESCE((SELECT SUM(th.Qty) FROM tblTransactionHistory th WHERE th.ContractNumber = s.ContractNumber AND th.Length = s.Length AND th.Description = s.Description AND th.Draw = 1), 0)) AS RemainingQty FROM tblStock s JOIN tblPurchase p ON s.ID = p.ID WHERE s.ID = ?;
 

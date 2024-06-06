@@ -69,8 +69,10 @@
             <th>Description</th>
             <th>Height</th>
             <th>Width</th>
-            <th>Length</th>
+            <th>Length Per Piece</th>
             <th>Qty Issued</th>
+            <th>Total Original Length</th>
+            <th>Total Length Remaining</th>
             <th>Issue Date</th>
           </tr>
         </thead>
@@ -93,6 +95,15 @@
                 <label for="idDropdown">ID:</label>
                 <select id="idDropdown" name="idDropdown">
                   <option disabled selected>Select ID</option>
+                </select>
+              </div>
+
+              <div class="control-row">
+                <label for="typeDropdown">Type:</label>
+                <select id="typeDropdown" name="typeDropdown">
+                  <option value="Stores">Stores</option>
+                  <option value="Offcuts">Offcuts</option>
+                  <option value="Used">Used(Drilled/Bent)</option>
                 </select>
               </div>
 
@@ -154,7 +165,9 @@
         let sendingData = [];
 
         // Extract necessary data from the row
+        const id=insertData[0].ID;
         const contractNumber = insertData[0].ContractNumber;
+        const returnType = document.getElementById("typeDropdown").value;
         const description = insertData[0].Description;
         const panelNumber = insertData[0].Panel;
         const height = insertData[0].Height;
@@ -164,7 +177,9 @@
 
         // Add data to insertData array
         sendingData.push({
+          id,
           contractNumber,
+          returnType,
           panelNumber,
           description,
           height,
@@ -195,6 +210,7 @@
           .catch((error) => {
             console.error("Error inserting data:", error);
           });
+          window.location.reload();
       }
 
       function populateData(data) {
@@ -279,6 +295,7 @@
 
         const idDropdown = document.getElementById("idDropdown");
         purchases.forEach((purchase) => {
+          // console.log(purchase);
           const row = document.createElement("tr");
           row.setAttribute("data-id", purchase.ID); // Add data-id attribute for identifying the row
           const cells = [
@@ -288,8 +305,10 @@
             purchase.Description,
             purchase.Height,
             purchase.Width,
-            purchase.Length,
+            purchase.LengthPerPiece,
             purchase.Qty,
+            purchase.TotalOriginalLength,
+            purchase.TotalCorrectedLength,
             purchase.DateOfTransaction,
           ];
           const option = document.createElement("option");
@@ -329,10 +348,15 @@
             { title: "Description", field: "Description", width: 125 },
             { title: "Height", field: "Height", width: 100 },
             { title: "Width", field: "Width", width: 100 },
-            { title: "Length", field: "Length", width: 100 },
+            { title: "Length Per Piece", field: "LengthPerPiece", width: 100 },
             { title: "Qty Issued", field: "Qty", width: 150 },
+            { title: "Total Original Length", field: "TotalOriginalLength", width: 100 },
+            { title: "Total Length Remaining", field: "TotalCorrectedLength", width: 100 },
             { title: "Issue Date", field: "DateOfTransaction", width: 150 },
           ],
+
+          //<th>Total Original Length</th>
+          //<th>Total Corrected Length</th>
           layout: "fitColumns",
           width: "100%",
           // Set height to 400px

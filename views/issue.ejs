@@ -55,6 +55,8 @@
         >
           <option disabled selected>Select a Contract Number</option>
           <option value="Stores">Stores</option>
+          <option value="Offcuts">Offcuts</option>
+          <option value="Used">Used(Drilled/Bent)</option>
           <% contractNumbers.forEach(contractNumbers => { %>
           <option value="<%= contractNumbers.ContractNumber %>">
             <%= contractNumbers.ContractNumber %>
@@ -180,6 +182,36 @@ const selectedContractNumber = contractNumberDropDown.value;
         console.log(selectedContractNumber);
         if (selectedContractNumber == "Stores") {
           fetch(`/issue/purchasesStores`)
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Network response was not ok");
+              }
+              return response.json();
+            })
+            .then((data) => {
+              populateTableStores(data);
+              // console.log(data);
+            })
+            .catch((error) => {
+              console.error("Error fetching purchases:", error);
+            });
+        }else if (selectedContractNumber == "Offcuts") {
+          fetch(`/issue/purchasesOffcuts`)
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Network response was not ok");
+              }
+              return response.json();
+            })
+            .then((data) => {
+              populateTableStores(data);
+              // console.log(data);
+            })
+            .catch((error) => {
+              console.error("Error fetching purchases:", error);
+            });
+        }else if (selectedContractNumber == "Used") {
+          fetch(`/issue/purchasesUsed`)
             .then((response) => {
               if (!response.ok) {
                 throw new Error("Network response was not ok");
