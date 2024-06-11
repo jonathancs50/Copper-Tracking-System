@@ -23,7 +23,12 @@ router.get("/", (req, res, next) => {
 // Route handler for fetching purchases based on contract number
 router.get("/transactions/:contractNumber", (req, res, next) => {
   const contractNumber = req.params.contractNumber;
-  const purchaseQuery ="SELECT th.ID, th.ContractNumber, th.Panel, th.Description, th.Height, th.Width, th.Length AS LengthPerPiece, th.Length * th.Qty AS TotalOriginalLength, th.Qty, th.Draw, th.Return, th.DateOfTransaction, th.DrawnFrom, COALESCE(th.Length * th.Qty - SUM(r.Length), th.Length * th.Qty) AS TotalCorrectedLength FROM tblTransactionHistory th LEFT JOIN tblReturns r ON th.ID = r.TransactionID WHERE th.ContractNumber = ? AND Draw=1 GROUP BY th.ID, th.ContractNumber, th.Panel, th.Description, th.Height, th.Width, th.Length, th.Qty, th.Draw, th.Return, th.DateOfTransaction, th.DrawnFrom;";
+  const purchaseQuery ="  SELECT th.ID, th.ContractNumber, th.Panel, th.Description, th.Height, th.Width, th.Length AS LengthPerPiece, th.Length * th.Qty AS TotalOriginalLength, th.Qty, th.Draw, th.Return, th.DateOfTransaction, th.DrawnFrom, (th.Length * th.Qty) - COALESCE(SUM(r.Length * r.QtyReturned), 0) AS TotalCorrectedLength FROM tblTransactionHistory th LEFT JOIN tblReturns r ON th.ID = r.TransactionID WHERE th.ContractNumber = ? AND th.Draw = 1 GROUP BY th.ID, th.ContractNumber, th.Panel, th.Description, th.Height, th.Width, th.Length, th.Qty, th.Draw, th.Return, th.DateOfTransaction, th.DrawnFrom;";
+
+
+
+
+  //SELECT th.ID, th.ContractNumber, th.Panel, th.Description, th.Height, th.Width, th.Length AS LengthPerPiece, th.Length * th.Qty AS TotalOriginalLength, th.Qty, th.Draw, th.Return, th.DateOfTransaction, th.DrawnFrom, COALESCE(th.Length * th.Qty - SUM(r.Length), th.Length * th.Qty) AS TotalCorrectedLength FROM tblTransactionHistory th LEFT JOIN tblReturns r ON th.ID = r.TransactionID WHERE th.ContractNumber = ? AND Draw=1 GROUP BY th.ID, th.ContractNumber, th.Panel, th.Description, th.Height, th.Width, th.Length, th.Qty, th.Draw, th.Return, th.DateOfTransaction, th.DrawnFrom;
     
   
   // "SELECT * FROM tblTransactionHistory WHERE ContractNumber = ? AND Draw = 1";
