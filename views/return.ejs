@@ -53,6 +53,9 @@
           </option>
           <% }); %>
         </select>
+        <button type="button" class="button" onclick="refreshPage()">
+          Refresh Page
+        </button>
       </div>
 
       <p class="form-actions">
@@ -254,6 +257,7 @@
         .addEventListener("change", function () {
           const selectedValue = this.value;
           handleSelectionChange(selectedValue);
+          this.disabled = true;
         });
 
       function handleSubmit(event) {
@@ -366,6 +370,10 @@
           movableRows: true,
           movableColumns: true,
         });
+      }
+
+      function refreshPage() {
+        window.location.reload();
       }
     </script>
   </body>

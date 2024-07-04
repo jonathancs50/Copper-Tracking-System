@@ -120,7 +120,7 @@ router.get("/correctedQty/:id", (req, res, next) => {
 router.post("/insertIssueTransaction", (req, res, next) => {
   const { insertData } = req.body;
   const currentDate = new Date().toLocaleDateString();
-
+console.log(insertData);
   // Prepare the SQL queries
   const query1 =
     "INSERT INTO tblTransactionHistory (ContractNumber, Panel, Description, Height, Width, Length, Qty, Draw, DateOfTransaction,DrawnFrom) VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?,?)";
@@ -191,7 +191,7 @@ router.post("/insertIssueTransaction", (req, res, next) => {
           }
         });
 
-        if (selectedContractNumber === "Stores") {
+        if (selectedContractNumber === "Stores" || selectedContractNumber === "Used" || selectedContractNumber === "Offcuts") {
           global.db.run(query3, values3, function (err) {
             if (err) {
               insertionErrors.push(err.message);

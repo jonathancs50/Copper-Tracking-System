@@ -59,6 +59,9 @@
           </option>
           <% }); %>
         </select>
+        <button type="button" class="button" onclick="refreshPage()">
+          Refresh Page
+        </button>
       </div>
 
       <p class="form-actions">
@@ -229,6 +232,10 @@
           movableRows: true,
           movableColumns: true,
         });
+      }
+
+      function refreshPage() {
+        window.location.reload();
       }
     </script>
   </body>
