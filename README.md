@@ -32,8 +32,8 @@ The audit feature allows users to select a contract and view a detailed report o
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/jonathancs50/recipe-sharing-site-with-next.git
-   cd recipe-sharing-site-with-next
+   git clone https://github.com/jonathancs50/Copper-Tracking-System.git
+   cd Copper-Tracking-System
    ```
 
 2. **Install dependencies**:
@@ -43,7 +43,7 @@ The audit feature allows users to select a contract and view a detailed report o
 
 3. **Run the development server**:
    ```bash
-   npm node index.js
+   node index.js
    ```
 
 4. Open your browser and navigate to `http://localhost:3000` to view the site.
