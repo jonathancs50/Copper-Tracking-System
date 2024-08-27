@@ -48,6 +48,8 @@ The audit feature allows users to select a contract and view a detailed report o
 
 4. Open your browser and navigate to `http://localhost:3000` to view the site.
 
+5. To access restricted routes password: '''bash LVP98'''
+
 ## Collaboration
 
 This project was developed in collaboration with [Michael Dale](https://github.com/Michael-Dale). Together, we worked on the design, development, and implementation of the LV Panels Copper Tracking System. We divided responsibilities based on our strengths to ensure the project was completed efficiently and effectively.
