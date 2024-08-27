@@ -48,7 +48,10 @@ The audit feature allows users to select a contract and view a detailed report o
 
 4. Open your browser and navigate to `http://localhost:3000` to view the site.
 
-5. To access restricted routes password: ```bash LVP98```
+5. To access restricted routes password:
+   ```bash
+   LVP98
+   ```
 
 ## Collaboration
 
