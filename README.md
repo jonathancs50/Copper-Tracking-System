@@ -59,4 +59,4 @@ This project was developed in collaboration with [Michael Dale](https://github.c
 
 ## License
 
-This project is licensed under the MIT License. You are free to use, modify, and distribute this software in accordance with the terms of the license. For more details, see the [LICENSE](LICENSE) file.
+This project is licensed under the Creative Commons Zero v1.0 Universal License. You are free to use, modify, and distribute this software in accordance with the terms of the license. For more details, see the [LICENSE](LICENSE) file.
